@@ -52,6 +52,30 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
+				info: {
+					DEFAULT: 'hsl(var(--info))',
+					foreground: 'hsl(var(--info-foreground))'
+				},
+				category: {
+					food: 'hsl(var(--category-food))',
+					transport: 'hsl(var(--category-transport))',
+					entertainment: 'hsl(var(--category-entertainment))',
+					shopping: 'hsl(var(--category-shopping))',
+					bills: 'hsl(var(--category-bills))',
+					other: 'hsl(var(--category-other))'
+				},
+				chart: {
+					grid: 'hsl(var(--chart-grid))',
+					average: 'hsl(var(--chart-average))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

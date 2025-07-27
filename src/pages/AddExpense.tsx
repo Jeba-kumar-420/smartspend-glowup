@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Receipt } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -24,8 +25,19 @@ const AddExpense = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const { addExpense, formatCurrency } = useApp();
 
-  const categories = ["Food", "Travel", "Books", "Transport", "Others"];
+  const categories = [
+    { value: "food", label: "Food & Dining", icon: "🍕" },
+    { value: "transport", label: "Transportation", icon: "🚗" },
+    { value: "entertainment", label: "Entertainment", icon: "🎬" },
+    { value: "shopping", label: "Shopping", icon: "🛍️" },
+    { value: "bills", label: "Bills & Utilities", icon: "💡" },
+    { value: "health", label: "Healthcare", icon: "🏥" },
+    { value: "education", label: "Education", icon: "📚" },
+    { value: "travel", label: "Travel", icon: "✈️" },
+    { value: "other", label: "Other", icon: "📝" },
+  ];
 
   const handleSave = () => {
     if (!amount || !category) {
@@ -37,10 +49,28 @@ const AddExpense = () => {
       return;
     }
 
-    // Save expense logic would go here
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount) || numericAmount <= 0) {
+      toast({
+        title: "Invalid amount",
+        description: "Please enter a valid positive amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Add expense using context
+    addExpense({
+      amount: numericAmount,
+      category,
+      note: notes,
+      date: date.toISOString(),
+    });
+
+    const selectedCategory = categories.find(cat => cat.value === category);
     toast({
-      title: "Expense saved",
-      description: `Added $${amount} for ${category}`,
+      title: "Expense saved successfully!",
+      description: `Added ${formatCurrency(numericAmount)} for ${selectedCategory?.label || category}`,
     });
 
     // Reset form
@@ -48,6 +78,9 @@ const AddExpense = () => {
     setCategory("");
     setNotes("");
     setDate(new Date());
+    
+    // Navigate back to dashboard
+    navigate("/");
   };
 
   const handleCancel = () => {
@@ -60,8 +93,13 @@ const AddExpense = () => {
       
       <main className="container mx-auto px-4 py-6">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-foreground">Add Expense</h1>
-          <p className="text-muted-foreground">Record your spending</p>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="bg-primary/20 p-2 rounded-full">
+              <Receipt className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Add Expense</h1>
+          </div>
+          <p className="text-muted-foreground">Record your spending and track your budget</p>
         </div>
 
         <Card className="max-w-md mx-auto">
@@ -88,8 +126,11 @@ const AddExpense = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
+                    <SelectItem key={cat.value} value={cat.value}>
+                      <div className="flex items-center gap-2">
+                        <span>{cat.icon}</span>
+                        <span>{cat.label}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>

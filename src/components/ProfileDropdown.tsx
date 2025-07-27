@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -8,18 +9,14 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { User, Settings, LogOut, UserCircle } from "lucide-react";
+import { useApp } from "@/contexts/AppContext";
+import { ProfileModal } from "./ProfileModal";
 
-interface ProfileDropdownProps {
-  user?: {
-    name: string;
-    email: string;
-    avatar?: string;
-  };
-  isLoggedIn?: boolean;
-}
-
-export const ProfileDropdown = ({ user, isLoggedIn = false }: ProfileDropdownProps) => {
+export const ProfileDropdown = () => {
+  const { user, isLoggedIn, logout } = useApp();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const getInitials = (name: string) => {
     return name
@@ -31,15 +28,19 @@ export const ProfileDropdown = ({ user, isLoggedIn = false }: ProfileDropdownPro
   };
 
   const handleProfileClick = () => {
-    console.log("View Profile clicked");
+    setShowProfileModal(true);
+    setIsOpen(false);
   };
 
   const handleSettingsClick = () => {
-    console.log("Settings clicked");
+    navigate('/settings');
+    setIsOpen(false);
   };
 
   const handleLogoutClick = () => {
-    console.log("Logout clicked");
+    logout();
+    navigate('/');
+    setIsOpen(false);
   };
 
   if (!isLoggedIn) {
@@ -53,7 +54,9 @@ export const ProfileDropdown = ({ user, isLoggedIn = false }: ProfileDropdownPro
   }
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <>
+      <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
           <AvatarImage src={user?.avatar} alt={user?.name} />
@@ -91,5 +94,6 @@ export const ProfileDropdown = ({ user, isLoggedIn = false }: ProfileDropdownPro
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   );
 };

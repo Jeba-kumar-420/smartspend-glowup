@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { ProfileDropdown } from "./ProfileDropdown";
+import { CurrencySelector } from "./CurrencySelector";
 import { Receipt, Moon, Sun } from "lucide-react";
 
 interface HeaderProps {
@@ -9,14 +9,6 @@ interface HeaderProps {
 }
 
 export const Header = ({ isDarkMode, onToggleDarkMode }: HeaderProps) => {
-  // Mock user data - in a real app this would come from auth context
-  const [user] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "", // Empty to show initials
-  });
-
-  const [isLoggedIn] = useState(true); // Mock login state
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
@@ -34,7 +26,10 @@ export const Header = ({ isDarkMode, onToggleDarkMode }: HeaderProps) => {
           </div>
 
           {/* Right Side Controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
+            {/* Currency Selector */}
+            <CurrencySelector />
+            
             {/* Dark Mode Toggle */}
             <div className="flex items-center space-x-2">
               <Sun className="h-4 w-4 text-muted-foreground" />
@@ -47,7 +42,7 @@ export const Header = ({ isDarkMode, onToggleDarkMode }: HeaderProps) => {
             </div>
 
             {/* Profile Dropdown */}
-            <ProfileDropdown user={user} isLoggedIn={isLoggedIn} />
+            <ProfileDropdown />
           </div>
         </div>
       </div>

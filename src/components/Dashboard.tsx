@@ -1,20 +1,45 @@
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SpendingChart } from "./SpendingChart";
-import { User, Plus, History, Download } from "lucide-react";
-
-// Mock data for the chart
-const mockSpendingData = [
-  { day: "Sun", date: "Dec 15", amount: 0, category: "food" },
-  { day: "Mon", date: "Dec 16", amount: 0, category: "transport" },
-  { day: "Tue", date: "Dec 17", amount: 0, category: "entertainment" },
-  { day: "Wed", date: "Dec 18", amount: 0, category: "shopping" },
-  { day: "Thu", date: "Dec 19", amount: 0, category: "bills" },
-  { day: "Fri", date: "Dec 20", amount: 0, category: "food" },
-  { day: "Sat", date: "Dec 21", amount: 0, category: "other" },
-];
+import { ReportGenerator } from "./ReportGenerator";
+import { useApp } from "@/contexts/AppContext";
+import { User, Plus, History, TrendingUp } from "lucide-react";
 
 export const Dashboard = () => {
+  const { user, formatCurrency, getTotalSpending, expenses } = useApp();
+  const navigate = useNavigate();
+
+  // Generate chart data from actual expenses or use empty data
+  const generateChartData = () => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const now = new Date();
+    const weekData = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      
+      const dayExpenses = expenses.filter(expense => {
+        const expenseDate = new Date(expense.date);
+        return expenseDate.toDateString() === date.toDateString();
+      });
+
+      const totalAmount = dayExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const mainCategory = dayExpenses.length > 0 ? dayExpenses[0].category : 'other';
+
+      weekData.push({
+        day: days[date.getDay()],
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        amount: totalAmount,
+        category: mainCategory,
+      });
+    }
+
+    return weekData;
+  };
+
+  const chartData = generateChartData();
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -26,7 +51,7 @@ export const Dashboard = () => {
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-foreground mb-1">
-                Welcome to SmartSpend!
+                Welcome back, {user?.name || 'User'}!
               </h2>
               <p className="text-muted-foreground">
                 Track your expenses and manage your budget effectively
@@ -43,7 +68,9 @@ export const Dashboard = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Today</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">$0.00</div>
+            <div className="text-2xl font-bold text-success">
+              {formatCurrency(getTotalSpending('today'))}
+            </div>
           </CardContent>
         </Card>
 
@@ -52,7 +79,9 @@ export const Dashboard = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Week</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-info">$0.00</div>
+            <div className="text-2xl font-bold text-info">
+              {formatCurrency(getTotalSpending('week'))}
+            </div>
           </CardContent>
         </Card>
 
@@ -61,33 +90,33 @@ export const Dashboard = () => {
             <CardTitle className="text-sm font-medium text-muted-foreground">Month</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning">$0.00</div>
+            <div className="text-2xl font-bold text-warning">
+              {formatCurrency(getTotalSpending('month'))}
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Spending Chart */}
-      <SpendingChart data={mockSpendingData} showAverage={true} />
+      <SpendingChart data={chartData} showAverage={true} />
 
       {/* Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Button 
           className="h-12 bg-success hover:bg-success/90 text-success-foreground"
           size="lg"
+          onClick={() => navigate('/add-expense')}
         >
           <Plus className="mr-2 h-5 w-5" />
           Add New Expense
         </Button>
 
         <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" className="h-12">
-            <History className="mr-2 h-4 w-4" />
-            History
+          <Button variant="outline" className="h-12" onClick={() => navigate('/savings')}>
+            <TrendingUp className="mr-2 h-4 w-4" />
+            Savings
           </Button>
-          <Button variant="outline" className="h-12">
-            <Download className="mr-2 h-4 w-4" />
-            Report
-          </Button>
+          <ReportGenerator />
         </div>
       </div>
     </div>

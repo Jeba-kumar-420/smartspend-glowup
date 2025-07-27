@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,7 @@ const SavingsDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const { formatCurrency, currency } = useApp();
   
   const [goalAmount, setGoalAmount] = useState("1000");
   const [currentSavings, setCurrentSavings] = useState("250");
@@ -98,18 +100,18 @@ const SavingsDetail = () => {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
-                    <p className="text-2xl font-bold text-primary">${currentSavings}</p>
+                    <p className="text-2xl font-bold text-primary">{formatCurrency(Number(currentSavings))}</p>
                     <p className="text-sm text-muted-foreground">Current Savings</p>
                   </div>
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
-                    <p className="text-2xl font-bold text-accent-foreground">${goalAmount}</p>
+                    <p className="text-2xl font-bold text-accent-foreground">{formatCurrency(Number(goalAmount))}</p>
                     <p className="text-sm text-muted-foreground">Goal Amount</p>
                   </div>
                 </div>
 
                 <div className="flex justify-center gap-4">
                   <Badge variant="secondary" className="px-3 py-1">
-                    ${remaining.toFixed(2)} remaining
+                    {formatCurrency(remaining)} remaining
                   </Badge>
                   <Badge variant="outline" className="px-3 py-1">
                     {monthsToGoal} months to goal
@@ -125,7 +127,7 @@ const SavingsDetail = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="goal">Goal Amount ($)</Label>
+                  <Label htmlFor="goal">Goal Amount ({currency})</Label>
                   <Input
                     id="goal"
                     type="number"
@@ -136,7 +138,7 @@ const SavingsDetail = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="current">Current Savings ($)</Label>
+                  <Label htmlFor="current">Current Savings ({currency})</Label>
                   <Input
                     id="current"
                     type="number"
@@ -147,7 +149,7 @@ const SavingsDetail = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="monthly">Monthly Contribution ($)</Label>
+                  <Label htmlFor="monthly">Monthly Contribution ({currency})</Label>
                   <Input
                     id="monthly"
                     type="number"
@@ -190,7 +192,7 @@ const SavingsDetail = () => {
                     <span className="text-sm">Weekly savings needed</span>
                   </div>
                   <span className="text-sm font-medium">
-                    ${(Number(monthlyContribution) / 4).toFixed(2)}
+                    {formatCurrency(Number(monthlyContribution) / 4)}
                   </span>
                 </div>
               </CardContent>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,12 +26,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
-  const [currency, setCurrency] = useState("USD");
   const [dailyBudget, setDailyBudget] = useState("0");
   const [notifications, setNotifications] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const { currency, formatCurrency } = useApp();
 
   const savingsCategories = [
     { id: "daily", title: "Daily Savings", description: "Track daily", icon: PiggyBank, color: "bg-emerald-100 hover:bg-emerald-200 border-emerald-200" },
@@ -125,20 +126,13 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currency">Preferred Currency</Label>
-                <Select value={currency} onValueChange={setCurrency}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USD">$ USD - US Dollar</SelectItem>
-                    <SelectItem value="EUR">€ EUR - Euro</SelectItem>
-                    <SelectItem value="GBP">£ GBP - British Pound</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Current Currency</Label>
+                <div className="text-lg font-medium text-primary">
+                  {currency} - {formatCurrency(0).replace('0.00', 'Format')}
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Currency will be applied to all expense displays
+                Use the currency selector in the header to change your preferred currency. All amounts will be displayed in the selected format.
               </p>
             </CardContent>
           </Card>
@@ -150,7 +144,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="budget">Daily Budget Limit ($)</Label>
+                <Label htmlFor="budget">Daily Budget Limit ({currency})</Label>
                 <Input
                   id="budget"
                   type="number"

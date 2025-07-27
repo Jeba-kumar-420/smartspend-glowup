@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useApp } from "@/contexts/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ const Savings = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
+  const { formatCurrency } = useApp();
 
   const handleAddSaving = () => {
     if (!newSaving || isNaN(Number(newSaving))) {
@@ -35,7 +37,7 @@ const Savings = () => {
     
     toast({
       title: "Savings added",
-      description: `Added $${amount.toFixed(2)} to your savings!`,
+      description: `Added ${formatCurrency(amount)} to your savings!`,
     });
   };
 
@@ -60,7 +62,7 @@ const Savings = () => {
                   <Target className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">Monthly Target</span>
                 </div>
-                <p className="text-2xl font-bold text-primary">${monthlyTarget.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-primary">{formatCurrency(monthlyTarget)}</p>
               </CardContent>
             </Card>
 
@@ -70,7 +72,7 @@ const Savings = () => {
                   <TrendingUp className="w-4 h-4 text-accent-foreground" />
                   <span className="text-sm font-medium text-accent-foreground">This Month</span>
                 </div>
-                <p className="text-2xl font-bold text-accent-foreground">${thisMonth.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-accent-foreground">{formatCurrency(thisMonth)}</p>
               </CardContent>
             </Card>
           </div>

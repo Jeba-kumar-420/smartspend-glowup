@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { HistorySection } from "@/components/HistorySection";
+import { ReportGenerator } from "@/components/ReportGenerator";
+import { DailySavingsTracker } from "@/components/DailySavingsTracker";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Settings2, 
   PiggyBank, 
@@ -21,13 +24,15 @@ import {
   History,
   BarChart3,
   DollarSign,
-  Bell
+  Bell,
+  Download
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
   const [dailyBudget, setDailyBudget] = useState("0");
   const [notifications, setNotifications] = useState(false);
+  const [activeTab, setActiveTab] = useState("settings");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -66,7 +71,28 @@ const Settings = () => {
           <p className="text-muted-foreground">Customize your experience</p>
         </div>
 
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-6">
+              <TabsTrigger value="settings" className="gap-2">
+                <Settings2 className="w-4 h-4" />
+                Settings
+              </TabsTrigger>
+              <TabsTrigger value="history" className="gap-2">
+                <History className="w-4 h-4" />
+                History
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Reports
+              </TabsTrigger>
+              <TabsTrigger value="savings" className="gap-2">
+                <PiggyBank className="w-4 h-4" />
+                Savings
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="settings" className="space-y-6">
           {/* Savings Options */}
           <Card>
             <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
@@ -100,14 +126,20 @@ const Settings = () => {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4">
-            <Card className="cursor-pointer hover:bg-accent/5 transition-colors">
+            <Card 
+              className="cursor-pointer hover:bg-accent/5 transition-colors"
+              onClick={() => setActiveTab("history")}
+            >
               <CardContent className="p-4 text-center">
                 <History className="w-6 h-6 mx-auto mb-2 text-accent-foreground" />
                 <h3 className="font-semibold">History</h3>
                 <p className="text-sm text-muted-foreground">View all expenses</p>
               </CardContent>
             </Card>
-            <Card className="cursor-pointer hover:bg-accent/5 transition-colors">
+            <Card 
+              className="cursor-pointer hover:bg-accent/5 transition-colors"
+              onClick={() => setActiveTab("reports")}
+            >
               <CardContent className="p-4 text-center">
                 <BarChart3 className="w-6 h-6 mx-auto mb-2 text-accent-foreground" />
                 <h3 className="font-semibold">Reports</h3>
@@ -204,9 +236,39 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          <Button onClick={handleSaveSettings} className="w-full">
-            Save Settings
-          </Button>
+              <Button onClick={handleSaveSettings} className="w-full">
+                Save Settings
+              </Button>
+            </TabsContent>
+
+            <TabsContent value="history">
+              <HistorySection />
+            </TabsContent>
+
+            <TabsContent value="reports" className="space-y-6">
+              <Card>
+                <CardHeader className="bg-accent text-accent-foreground rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2">
+                    <Download className="w-5 h-5" />
+                    Financial Reports
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="text-center space-y-4">
+                    <p className="text-muted-foreground">
+                      Generate comprehensive reports of your financial data including expenses, 
+                      savings, and spending patterns.
+                    </p>
+                    <ReportGenerator />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="savings">
+              <DailySavingsTracker />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 

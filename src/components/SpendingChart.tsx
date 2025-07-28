@@ -153,19 +153,19 @@ export const SpendingChart = ({ data = [], showAverage = true }: SpendingChartPr
                 <Line
                   type="monotone"
                   dataKey="amount"
-                  stroke="hsl(var(--primary))"
+                  stroke="#ffffff"
                   strokeWidth={3}
                   dot={{ 
                     r: 6, 
-                    fill: "hsl(var(--primary))",
+                    fill: "#ffffff",
                     strokeWidth: 2,
-                    stroke: "hsl(var(--background))"
+                    stroke: "hsl(var(--primary))"
                   }}
                   activeDot={{ 
                     r: 8, 
-                    fill: "hsl(var(--primary))",
+                    fill: "#ffffff",
                     strokeWidth: 2,
-                    stroke: "hsl(var(--background))"
+                    stroke: "hsl(var(--primary))"
                   }}
                   connectNulls={false}
                 />

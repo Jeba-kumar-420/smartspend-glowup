@@ -6,10 +6,47 @@ import { DailyChartsSection } from "./DailyChartsSection";
 import { ReportGenerator } from "./ReportGenerator";
 import { useApp } from "@/contexts/AppContext";
 import { User, Plus, History, TrendingUp } from "lucide-react";
+import { useMemo } from "react";
 
 export const Dashboard = () => {
   const { user, formatCurrency, getTotalSpending, expenses } = useApp();
   const navigate = useNavigate();
+
+  // Get savings data for chart
+  const savingsChartData = useMemo(() => {
+    const dailySavings = (() => {
+      try {
+        const saved = localStorage.getItem('dailySavings');
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    })();
+
+    const now = new Date();
+    const weekData = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      
+      const daySavings = dailySavings.filter((saving: any) => {
+        const savingDate = new Date(saving.date);
+        return savingDate.toDateString() === date.toDateString();
+      });
+
+      const totalAmount = daySavings.reduce((sum: number, saving: any) => sum + saving.amount, 0);
+
+      weekData.push({
+        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        amount: totalAmount,
+        category: 'savings',
+      });
+    }
+
+    return weekData;
+  }, []);
 
   // Generate chart data from actual expenses or use empty data
   const generateChartData = () => {
@@ -97,6 +134,26 @@ export const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Daily Savings Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold flex items-center gap-2">
+            <TrendingUp className="h-6 w-6 text-success" />
+            Daily Savings for Last 7 Days
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <SpendingChart 
+              data={savingsChartData} 
+              showAverage={true}
+              title=""
+              lineColor="#ffffff"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Daily Charts Section */}
       <DailyChartsSection />

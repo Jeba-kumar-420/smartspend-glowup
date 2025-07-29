@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,12 +7,47 @@ import { useToast } from "@/hooks/use-toast";
 import { Download, FileText, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export const ReportGenerator = () => {
   const { user, expenses, formatCurrency, getTotalSpending, getSpendingByCategory } = useApp();
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Get daily savings data
+  const dailySavings = useMemo(() => {
+    try {
+      const saved = localStorage.getItem('dailySavings');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  }, []);
+
+  // Calculate savings totals
+  const savingsTotals = useMemo(() => {
+    const total = dailySavings.reduce((sum: number, saving: any) => sum + saving.amount, 0);
+    const today = new Date();
+    
+    const todaySavings = dailySavings
+      .filter((saving: any) => new Date(saving.date).toDateString() === today.toDateString())
+      .reduce((sum: number, saving: any) => sum + saving.amount, 0);
+    
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekSavings = dailySavings
+      .filter((saving: any) => new Date(saving.date) >= weekAgo)
+      .reduce((sum: number, saving: any) => sum + saving.amount, 0);
+    
+    const monthAgo = new Date(today);
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    const monthSavings = dailySavings
+      .filter((saving: any) => new Date(saving.date) >= monthAgo)
+      .reduce((sum: number, saving: any) => sum + saving.amount, 0);
+
+    return { total, today: todaySavings, week: weekSavings, month: monthSavings };
+  }, [dailySavings]);
 
   const generatePDFReport = async () => {
     setIsGenerating(true);
@@ -47,14 +82,26 @@ export const ReportGenerator = () => {
       pdf.text(`Today: ${formatCurrency(todaySpending)}`, 20, 105);
       pdf.text(`This Week: ${formatCurrency(weekSpending)}`, 20, 115);
       pdf.text(`This Month: ${formatCurrency(monthSpending)}`, 20, 125);
+
+      // Savings section
+      pdf.setFontSize(16);
+      pdf.setFont(undefined, 'bold');
+      pdf.text('Savings Summary', 20, 145);
+      
+      pdf.setFontSize(12);
+      pdf.setFont(undefined, 'normal');
+      pdf.text(`Today: ${formatCurrency(savingsTotals.today)}`, 20, 160);
+      pdf.text(`This Week: ${formatCurrency(savingsTotals.week)}`, 20, 170);
+      pdf.text(`This Month: ${formatCurrency(savingsTotals.month)}`, 20, 180);
+      pdf.text(`Total Savings: ${formatCurrency(savingsTotals.total)}`, 20, 190);
       
       // Category breakdown
       pdf.setFontSize(16);
       pdf.setFont(undefined, 'bold');
-      pdf.text('Spending by Category', 20, 145);
+      pdf.text('Spending by Category', 20, 205);
       
       const categorySpending = getSpendingByCategory();
-      let yPosition = 160;
+      let yPosition = 220;
       
       pdf.setFontSize(12);
       pdf.setFont(undefined, 'normal');
@@ -216,9 +263,10 @@ export const ReportGenerator = () => {
           <div className="bg-muted/50 p-3 rounded-lg text-xs text-muted-foreground">
             <div className="font-medium mb-1">Report will include:</div>
             <ul className="space-y-1">
-              <li>• Complete spending summary</li>
+              <li>• Complete spending & savings summary</li>
               <li>• Category-wise breakdown</li>
               <li>• Recent transaction history</li>
+              <li>• Daily spending & savings charts</li>
               <li>• User profile information</li>
             </ul>
           </div>

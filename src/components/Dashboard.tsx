@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SpendingChart } from "./SpendingChart";
+import { DailyChartsSection } from "./DailyChartsSection";
 import { ReportGenerator } from "./ReportGenerator";
 import { useApp } from "@/contexts/AppContext";
 import { User, Plus, History, TrendingUp } from "lucide-react";
@@ -97,8 +98,8 @@ export const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Spending Chart */}
-      <SpendingChart data={chartData} showAverage={true} />
+      {/* Daily Charts Section */}
+      <DailyChartsSection />
 
       {/* Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -22,6 +22,8 @@ interface SpendingDataPoint {
 interface SpendingChartProps {
   data?: SpendingDataPoint[];
   showAverage?: boolean;
+  title?: string;
+  lineColor?: string;
 }
 
 const categoryColors = {
@@ -76,7 +78,7 @@ const EmptyState = () => (
   </div>
 );
 
-export const SpendingChart = ({ data = [], showAverage = true }: SpendingChartProps) => {
+export const SpendingChart = ({ data = [], showAverage = true, title, lineColor = "#ffffff" }: SpendingChartProps) => {
   const { chartData, averageSpending } = useMemo(() => {
     if (!data.length) {
       // Generate empty data for the last 7 days
@@ -108,7 +110,7 @@ export const SpendingChart = ({ data = [], showAverage = true }: SpendingChartPr
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center space-x-2 text-lg">
           <BarChart3 className="h-5 w-5 text-primary" />
-          <span>Daily Spending (Last 7 Days)</span>
+          <span>{title || "Daily Spending (Last 7 Days)"}</span>
           {hasData && showAverage && (
             <div className="flex items-center space-x-1 text-sm text-muted-foreground ml-auto">
               <TrendingUp className="h-4 w-4" />
@@ -153,7 +155,7 @@ export const SpendingChart = ({ data = [], showAverage = true }: SpendingChartPr
                 <Line
                   type="monotone"
                   dataKey="amount"
-                  stroke="#ffffff"
+                  stroke={lineColor}
                   strokeWidth={3}
                   dot={{ 
                     r: 6, 

@@ -1,4 +1,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { useToast } from "@/hooks/use-toast";
 
 // Types
 export interface User {
@@ -76,77 +80,97 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 };
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const { user: authUser } = useAuth();
+  const { profile, updateProfile: updateUserProfile } = useProfile();
+  const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currency, setCurrencyState] = useState<string>('USD');
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyHistory[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  // Initialize from localStorage
+  // Initialize from auth and profile
   useEffect(() => {
-    const savedUser = localStorage.getItem('smartspend_user');
-    const savedCurrency = localStorage.getItem('smartspend_currency');
-    const savedCurrencyHistory = localStorage.getItem('smartspend_currency_history');
-    const savedExpenses = localStorage.getItem('smartspend_expenses');
-
-    if (savedUser) {
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
+    if (authUser && profile) {
+      setUser({
+        id: authUser.id,
+        name: profile.full_name || authUser.email || '',
+        email: authUser.email || '',
+        avatar: profile.avatar_url || undefined,
+        joinDate: profile.created_at,
+      });
       setIsLoggedIn(true);
+      setCurrencyState(profile.currency || 'USD');
+      fetchExpenses();
     } else {
-      // Set default user for demo
-      const defaultUser: User = {
-        id: 'demo-user',
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        joinDate: new Date().toISOString(),
-      };
-      setUser(defaultUser);
-      setIsLoggedIn(true);
+      setUser(null);
+      setIsLoggedIn(false);
+      setExpenses([]);
     }
+  }, [authUser, profile]);
 
-    if (savedCurrency) {
-      setCurrencyState(savedCurrency);
-    }
+  const fetchExpenses = async () => {
+    if (!authUser) return;
 
-    if (savedCurrencyHistory) {
-      setCurrencyHistory(JSON.parse(savedCurrencyHistory));
-    }
+    try {
+      const { data, error } = await supabase
+        .from('expenses')
+        .select('*')
+        .eq('user_id', authUser.id)
+        .order('created_at', { ascending: false });
 
-    if (savedExpenses) {
-      setExpenses(JSON.parse(savedExpenses));
+      if (error) throw error;
+      
+      const formattedExpenses = data.map(expense => ({
+        id: expense.id.toString(),
+        amount: parseFloat(expense.amount.toString()),
+        category: expense.category,
+        note: expense.note || undefined,
+        date: expense.date,
+        userId: expense.user_id || authUser.id,
+      }));
+      
+      setExpenses(formattedExpenses);
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
     }
-  }, []);
+  };
 
   // User management functions
   const login = (userData: User) => {
     setUser(userData);
     setIsLoggedIn(true);
-    localStorage.setItem('smartspend_user', JSON.stringify(userData));
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     setIsLoggedIn(false);
-    localStorage.removeItem('smartspend_user');
-    localStorage.removeItem('smartspend_expenses');
     setExpenses([]);
   };
 
-  const updateProfile = (userData: Partial<User>) => {
-    if (user) {
+  const updateProfile = async (userData: Partial<User>) => {
+    if (user && profile) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
-      localStorage.setItem('smartspend_user', JSON.stringify(updatedUser));
+      
+      // Update profile in Supabase
+      await updateUserProfile({
+        full_name: userData.name,
+        avatar_url: userData.avatar,
+      });
     }
   };
 
   // Currency management functions
-  const setCurrency = (newCurrency: string) => {
-    if (currency !== newCurrency) {
+  const setCurrency = async (newCurrency: string) => {
+    if (currency !== newCurrency && profile) {
       addCurrencyChange(currency, newCurrency, 'User preference change');
       setCurrencyState(newCurrency);
-      localStorage.setItem('smartspend_currency', newCurrency);
+      
+      // Update currency in profile
+      await updateUserProfile({
+        currency: newCurrency
+      });
     }
   };
 
@@ -165,32 +189,111 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Expense management functions
-  const addExpense = (expenseData: Omit<Expense, 'id' | 'userId'>) => {
-    if (!user) return;
+  const addExpense = async (expenseData: Omit<Expense, 'id' | 'userId'>) => {
+    if (!authUser) return;
     
-    const expense: Expense = {
-      ...expenseData,
-      id: Date.now().toString(),
-      userId: user.id,
-    };
-    
-    const newExpenses = [expense, ...expenses];
-    setExpenses(newExpenses);
-    localStorage.setItem('smartspend_expenses', JSON.stringify(newExpenses));
+    try {
+      const { data, error } = await supabase
+        .from('expenses')
+        .insert({
+          user_id: authUser.id,
+          amount: expenseData.amount,
+          category: expenseData.category,
+          note: expenseData.note || null,
+          date: expenseData.date,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newExpense: Expense = {
+        id: data.id.toString(),
+        amount: parseFloat(data.amount.toString()),
+        category: data.category,
+        note: data.note || undefined,
+        date: data.date,
+        userId: data.user_id || authUser.id,
+      };
+
+      setExpenses(prev => [newExpense, ...prev]);
+      toast({
+        title: "Success",
+        description: "Expense added successfully",
+      });
+    } catch (error) {
+      console.error('Error adding expense:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add expense",
+        variant: "destructive",
+      });
+    }
   };
 
-  const updateExpense = (id: string, expenseData: Partial<Expense>) => {
-    const newExpenses = expenses.map(exp => 
-      exp.id === id ? { ...exp, ...expenseData } : exp
-    );
-    setExpenses(newExpenses);
-    localStorage.setItem('smartspend_expenses', JSON.stringify(newExpenses));
+  const updateExpense = async (id: string, expenseData: Partial<Expense>) => {
+    if (!authUser) return;
+
+    try {
+      const { error } = await supabase
+        .from('expenses')
+        .update({
+          amount: expenseData.amount,
+          category: expenseData.category,
+          note: expenseData.note || null,
+          date: expenseData.date,
+        })
+        .eq('id', parseInt(id))
+        .eq('user_id', authUser.id);
+
+      if (error) throw error;
+
+      const newExpenses = expenses.map(exp => 
+        exp.id === id ? { ...exp, ...expenseData } : exp
+      );
+      setExpenses(newExpenses);
+      
+      toast({
+        title: "Success",
+        description: "Expense updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update expense",
+        variant: "destructive",
+      });
+    }
   };
 
-  const deleteExpense = (id: string) => {
-    const newExpenses = expenses.filter(exp => exp.id !== id);
-    setExpenses(newExpenses);
-    localStorage.setItem('smartspend_expenses', JSON.stringify(newExpenses));
+  const deleteExpense = async (id: string) => {
+    if (!authUser) return;
+
+    try {
+      const { error } = await supabase
+        .from('expenses')
+        .delete()
+        .eq('id', parseInt(id))
+        .eq('user_id', authUser.id);
+
+      if (error) throw error;
+
+      const newExpenses = expenses.filter(exp => exp.id !== id);
+      setExpenses(newExpenses);
+      
+      toast({
+        title: "Success",
+        description: "Expense deleted successfully",
+      });
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete expense",
+        variant: "destructive",
+      });
+    }
   };
 
   // Utility functions

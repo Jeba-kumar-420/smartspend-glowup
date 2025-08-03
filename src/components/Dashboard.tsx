@@ -5,24 +5,17 @@ import { SpendingChart } from "./SpendingChart";
 import { DailyChartsSection } from "./DailyChartsSection";
 import { ReportGenerator } from "./ReportGenerator";
 import { useApp } from "@/contexts/AppContext";
+import { useSavings } from "@/hooks/useSavings";
 import { User, Plus, History, TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 
 export const Dashboard = () => {
   const { user, formatCurrency, getTotalSpending, expenses } = useApp();
+  const { savings } = useSavings();
   const navigate = useNavigate();
 
   // Get savings data for chart
   const savingsChartData = useMemo(() => {
-    const dailySavings = (() => {
-      try {
-        const saved = localStorage.getItem('dailySavings');
-        return saved ? JSON.parse(saved) : [];
-      } catch {
-        return [];
-      }
-    })();
-
     const now = new Date();
     const weekData = [];
 
@@ -30,12 +23,12 @@ export const Dashboard = () => {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       
-      const daySavings = dailySavings.filter((saving: any) => {
+      const daySavings = savings.filter(saving => {
         const savingDate = new Date(saving.date);
         return savingDate.toDateString() === date.toDateString();
       });
 
-      const totalAmount = daySavings.reduce((sum: number, saving: any) => sum + saving.amount, 0);
+      const totalAmount = daySavings.reduce((sum, saving) => sum + saving.amount, 0);
 
       weekData.push({
         day: date.toLocaleDateString('en-US', { weekday: 'short' }),
@@ -46,7 +39,7 @@ export const Dashboard = () => {
     }
 
     return weekData;
-  }, []);
+  }, [savings]);
 
   // Generate chart data from actual expenses or use empty data
   const generateChartData = () => {

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
+import { useSavings } from "@/hooks/useSavings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,25 +21,16 @@ interface SavingEntry {
 }
 
 const Savings = () => {
-  const [monthlyTarget, setMonthlyTarget] = useState(0);
-  const [thisMonth, setThisMonth] = useState(0);
   const [newSaving, setNewSaving] = useState("");
   const [savingDate, setSavingDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [savingCategory, setSavingCategory] = useState("");
-  const [savingsEntries, setSavingsEntries] = useState<SavingEntry[]>([]);
+  const [savingCategory, setSavingCategory] = useState("general");
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { formatCurrency } = useApp();
+  const { savings, addSaving, loading } = useSavings();
 
-  // Load savings from localStorage on component mount
-  useEffect(() => {
-    const savedEntries = localStorage.getItem('dailySavings');
-    if (savedEntries) {
-      setSavingsEntries(JSON.parse(savedEntries));
-    }
-  }, []);
 
-  const handleAddSaving = () => {
+  const handleAddSaving = async () => {
     if (!newSaving || isNaN(Number(newSaving))) {
       toast({
         title: "Invalid amount",
@@ -48,27 +40,15 @@ const Savings = () => {
       return;
     }
 
-    const amount = Number(newSaving);
-    const newEntry: SavingEntry = {
-      id: Date.now().toString(),
-      amount,
+    await addSaving({
+      amount: Number(newSaving),
       date: savingDate,
-      category: savingCategory || undefined,
-    };
-
-    const updatedEntries = [newEntry, ...savingsEntries];
-    setSavingsEntries(updatedEntries);
-    localStorage.setItem('dailySavings', JSON.stringify(updatedEntries));
-    
-    setThisMonth(prev => prev + amount);
-    setNewSaving("");
-    setSavingCategory("");
-    setSavingDate(format(new Date(), 'yyyy-MM-dd'));
-    
-    toast({
-      title: "Savings added",
-      description: `Added ${formatCurrency(amount)} to your savings!`,
+      category: savingCategory,
     });
+
+    setNewSaving("");
+    setSavingCategory("general");
+    setSavingDate(format(new Date(), 'yyyy-MM-dd'));
   };
 
   return (
@@ -85,27 +65,6 @@ const Savings = () => {
         </div>
 
         <div className="max-w-md mx-auto space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">Monthly Target</span>
-                </div>
-                <p className="text-2xl font-bold text-primary">{formatCurrency(monthlyTarget)}</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-accent/5 border-accent/20">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="w-4 h-4 text-accent-foreground" />
-                  <span className="text-sm font-medium text-accent-foreground">This Month</span>
-                </div>
-                <p className="text-2xl font-bold text-accent-foreground">{formatCurrency(thisMonth)}</p>
-              </CardContent>
-            </Card>
-          </div>
 
           <Card>
             <CardHeader>
@@ -169,7 +128,11 @@ const Savings = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {savingsEntries.length === 0 ? (
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading savings...</p>
+                </div>
+              ) : savings.length === 0 ? (
                 <div className="text-center py-8">
                   <PiggyBank className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground font-medium">No savings recorded yet</p>
@@ -177,7 +140,7 @@ const Savings = () => {
                 </div>
               ) : (
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {savingsEntries.map((entry) => (
+                  {savings.map((entry) => (
                     <div
                       key={entry.id}
                       className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"

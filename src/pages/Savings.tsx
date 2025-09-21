@@ -55,26 +55,25 @@ const Savings = () => {
     <div className="min-h-screen bg-background pb-20">
       <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
       
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <PiggyBank className="w-8 h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-4">
+            <PiggyBank className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">My Savings</h1>
-          <p className="text-muted-foreground">Track your daily savings</p>
+          <h1 className="text-lg sm:text-2xl font-bold text-foreground">My Savings</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Track your daily savings</p>
         </div>
 
-        <div className="max-w-md mx-auto space-y-6">
-
+        <div className="max-w-2xl mx-auto space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Plus className="w-5 h-5" />
                 Add New Savings Entry
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="amount">Amount</Label>
                   <Input
@@ -122,20 +121,21 @@ const Savings = () => {
 
           <Card>
             <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <PiggyBank className="w-5 h-5" />
                 Savings History
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               {loading ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Loading savings...</p>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="mt-2 text-muted-foreground">Loading savings...</p>
                 </div>
               ) : savings.length === 0 ? (
                 <div className="text-center py-8">
                   <PiggyBank className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground font-medium">No savings recorded yet</p>
+                  <p className="text-base font-medium text-muted-foreground">No savings recorded yet</p>
                   <p className="text-sm text-muted-foreground">Start saving today!</p>
                 </div>
               ) : (
@@ -143,7 +143,7 @@ const Savings = () => {
                   {savings.map((entry) => (
                     <div
                       key={entry.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-muted/50 transition-colors gap-2"
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
@@ -158,7 +158,7 @@ const Savings = () => {
                           </div>
                         )}
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <div className="text-lg font-bold text-success">
                           +{formatCurrency(entry.amount)}
                         </div>

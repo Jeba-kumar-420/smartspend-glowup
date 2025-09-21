@@ -93,7 +93,7 @@ export const Dashboard = () => {
       </Card>
 
       {/* Spending Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Today</CardTitle>
@@ -152,9 +152,9 @@ export const Dashboard = () => {
       <DailyChartsSection />
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-1 lg:grid-cols-2 sm:gap-4">
         <Button 
-          className="h-12 bg-success hover:bg-success/90 text-success-foreground"
+          className="w-full h-12 bg-success hover:bg-success/90 text-success-foreground"
           size="lg"
           onClick={() => navigate('/add-expense')}
         >
@@ -162,8 +162,8 @@ export const Dashboard = () => {
           Add New Expense
         </Button>
 
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" className="h-12" onClick={() => navigate('/savings')}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <Button variant="outline" className="h-12 w-full" onClick={() => navigate('/savings')}>
             <TrendingUp className="mr-2 h-4 w-4" />
             Savings
           </Button>

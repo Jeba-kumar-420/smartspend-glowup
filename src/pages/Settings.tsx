@@ -81,33 +81,37 @@ const Settings = () => {
     <div className="min-h-screen bg-background pb-20">
       <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
       
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-accent/10 rounded-full mb-4">
-            <Settings2 className="w-8 h-8 text-accent-foreground" />
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-accent/10 rounded-full mb-4">
+            <Settings2 className="w-6 h-6 sm:w-8 sm:h-8 text-accent-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-          <p className="text-muted-foreground">Customize your experience</p>
+          <h1 className="text-lg sm:text-2xl font-bold text-foreground">Settings</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Customize your experience</p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="settings" className="gap-2">
-                <Settings2 className="w-4 h-4" />
-                Settings
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+              <TabsTrigger value="settings" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Settings2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Settings</span>
+                <span className="sm:hidden">Set</span>
               </TabsTrigger>
-              <TabsTrigger value="history" className="gap-2">
-                <History className="w-4 h-4" />
-                History
+              <TabsTrigger value="history" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <History className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">History</span>
+                <span className="sm:hidden">Hist</span>
               </TabsTrigger>
-              <TabsTrigger value="reports" className="gap-2">
-                <BarChart3 className="w-4 h-4" />
-                Reports
+              <TabsTrigger value="reports" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Reports</span>
+                <span className="sm:hidden">Rep</span>
               </TabsTrigger>
-              <TabsTrigger value="savings" className="gap-2">
-                <PiggyBank className="w-4 h-4" />
-                Savings
+              <TabsTrigger value="savings" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Savings</span>
+                <span className="sm:hidden">Save</span>
               </TabsTrigger>
             </TabsList>
 
@@ -115,36 +119,36 @@ const Settings = () => {
           {/* Savings Options */}
           <Card>
             <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <PiggyBank className="w-5 h-5" />
                 Savings Options
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-2 gap-4 mb-4">
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                 {savingsCategories.map((category) => {
                   const Icon = category.icon;
                   return (
                     <button
                       key={category.id}
                       onClick={() => handleSavingsClick(category.id)}
-                      className={`p-4 rounded-lg border-2 transition-colors text-left ${category.color}`}
+                      className={`p-3 sm:p-4 rounded-lg border-2 transition-colors text-left ${category.color}`}
                     >
-                      <Icon className="w-6 h-6 mb-2 text-gray-600" />
-                      <h3 className="font-semibold text-gray-800">{category.title}</h3>
-                      <p className="text-sm text-gray-600">{category.description}</p>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-gray-600" />
+                      <h3 className="font-semibold text-sm sm:text-base text-gray-800">{category.title}</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">{category.description}</p>
                     </button>
                   );
                 })}
               </div>
-              <p className="text-sm text-muted-foreground text-center p-4 bg-muted/50 rounded-lg">
+              <p className="text-xs sm:text-sm text-muted-foreground text-center p-3 sm:p-4 bg-muted/50 rounded-lg">
                 Choose a savings category to start tracking your financial goals
               </p>
             </CardContent>
           </Card>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card 
               className="cursor-pointer hover:bg-accent/5 transition-colors"
               onClick={() => setActiveTab("history")}
@@ -170,19 +174,19 @@ const Settings = () => {
           {/* Currency Settings */}
           <Card>
             <CardHeader className="bg-accent text-accent-foreground rounded-t-lg">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <DollarSign className="w-5 h-5" />
                 Currency Settings
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="space-y-2">
-                <Label>Current Currency</Label>
-                <div className="text-lg font-medium text-primary">
+                <Label className="text-sm">Current Currency</Label>
+                <div className="text-base sm:text-lg font-medium text-primary">
                   {profile?.currency || 'USD'} - {formatCurrency(0).replace('0.00', 'Format')}
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Use the currency selector in the header to change your preferred currency. All amounts will be displayed in the selected format.
               </p>
             </CardContent>
@@ -191,19 +195,20 @@ const Settings = () => {
           {/* Budget Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>Budget Settings</CardTitle>
+              <CardTitle className="text-lg">Budget Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="budget">Daily Budget Limit ({profile?.currency || 'USD'})</Label>
+                <Label htmlFor="budget" className="text-sm">Daily Budget Limit ({profile?.currency || 'USD'})</Label>
                 <Input
                   id="budget"
                   type="number"
                   value={dailyBudget}
                   onChange={(e) => setDailyBudget(e.target.value)}
+                  placeholder="0.00"
                 />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Set to 0 to disable budget alerts
               </p>
             </CardContent>
@@ -212,16 +217,16 @@ const Settings = () => {
           {/* Notifications */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Bell className="w-5 h-5" />
                 Notifications
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="notifications">Daily Reminders</Label>
-                  <p className="text-sm text-muted-foreground">
+                <div className="flex-1 pr-4">
+                  <Label htmlFor="notifications" className="text-sm font-medium">Daily Reminders</Label>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Show reminder to log expenses 📱
                   </p>
                 </div>
@@ -237,7 +242,7 @@ const Settings = () => {
           {/* About */}
           <Card>
             <CardHeader>
-              <CardTitle>About SmartSpend</CardTitle>
+              <CardTitle className="text-lg">About SmartSpend</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
@@ -255,7 +260,7 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button onClick={handleSaveSettings} className="flex-1">
                   Save Settings
                 </Button>
@@ -272,14 +277,14 @@ const Settings = () => {
             <TabsContent value="reports" className="space-y-6">
               <Card>
                 <CardHeader className="bg-accent text-accent-foreground rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <Download className="w-5 h-5" />
                     Financial Reports
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="text-center space-y-4">
-                    <p className="text-muted-foreground">
+                    <p className="text-sm sm:text-base text-muted-foreground">
                       Generate comprehensive reports of your financial data including expenses, 
                       savings, and spending patterns.
                     </p>

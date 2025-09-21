@@ -123,9 +123,9 @@ export const SpendingChart = ({ data = [], showAverage = true, title, lineColor 
         {!hasData ? (
           <EmptyState />
         ) : (
-          <div className="h-64">
+          <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <LineChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
                   stroke="hsl(var(--chart-grid))" 

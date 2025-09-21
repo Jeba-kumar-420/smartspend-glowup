@@ -60,11 +60,11 @@ export const HistorySection = () => {
                   {sortedExpenses.map((expense) => (
                     <div
                       key={expense.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors gap-2"
                     >
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Badge variant="outline" className={getCategoryColor(expense.category)}>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <Badge variant="outline" className={`${getCategoryColor(expense.category)} text-xs`}>
                             {expense.category}
                           </Badge>
                           <span className="text-sm text-muted-foreground">
@@ -77,7 +77,7 @@ export const HistorySection = () => {
                           </p>
                         )}
                       </div>
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <div className="font-semibold text-destructive">
                           -{formatCurrency(expense.amount)}
                         </div>
@@ -101,19 +101,19 @@ export const HistorySection = () => {
                   {sortedCurrencyHistory.map((change) => (
                     <div
                       key={change.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors gap-2"
                     >
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{change.fromCurrency}</span>
+                            <span className="font-medium text-sm">{change.fromCurrency}</span>
                             <ArrowUpDown className="w-3 h-3 text-muted-foreground" />
-                            <span className="font-medium">{change.toCurrency}</span>
+                            <span className="font-medium text-sm">{change.toCurrency}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-xs sm:text-sm text-muted-foreground">
                             {format(new Date(change.changeDate), 'MMM dd, yyyy HH:mm')}
                           </span>
                         </div>

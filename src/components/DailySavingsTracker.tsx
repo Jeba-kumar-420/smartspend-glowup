@@ -113,7 +113,7 @@ export const DailySavingsTracker = () => {
         </CardHeader>
         <CardContent className="p-6">
           {/* Statistics */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-success">
                 {formatCurrency(totalSavings)}
@@ -130,7 +130,7 @@ export const DailySavingsTracker = () => {
 
           {/* Add Saving Form */}
           <div className="space-y-4 p-4 border rounded-lg bg-background">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="saving-amount">Amount Saved Today</Label>
                 <Input

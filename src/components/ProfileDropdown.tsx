@@ -9,11 +9,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { User, Settings, LogOut, UserCircle } from "lucide-react";
-import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import { ProfileModal } from "./ProfileModal";
 
 export const ProfileDropdown = () => {
-  const { user, isLoggedIn, logout } = useApp();
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -37,13 +39,13 @@ export const ProfileDropdown = () => {
     setIsOpen(false);
   };
 
-  const handleLogoutClick = () => {
-    logout();
-    navigate('/');
+  const handleLogoutClick = async () => {
+    await signOut();
+    navigate('/auth');
     setIsOpen(false);
   };
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
         <AvatarFallback className="bg-muted text-muted-foreground">
@@ -59,22 +61,22 @@ export const ProfileDropdown = () => {
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
-          <AvatarImage src={user?.avatar} alt={user?.name} />
+          <AvatarImage src={profile?.avatar_url || ''} alt={profile?.full_name || ''} />
           <AvatarFallback className="bg-primary text-primary-foreground font-medium">
-            {user?.name ? getInitials(user.name) : "U"}
+            {profile?.full_name ? getInitials(profile.full_name) : "U"}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg">
         <div className="flex items-center space-x-2 p-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.avatar} alt={user?.name} />
+            <AvatarImage src={profile?.avatar_url || ''} alt={profile?.full_name || ''} />
             <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-              {user?.name ? getInitials(user.name) : "U"}
+              {profile?.full_name ? getInitials(profile.full_name) : "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium text-foreground">{user?.name || "User"}</p>
+            <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
             <p className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</p>
           </div>
         </div>

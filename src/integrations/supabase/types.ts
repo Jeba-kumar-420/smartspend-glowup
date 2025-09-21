@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -18,53 +18,59 @@ export type Database = {
         Row: {
           amount: number
           category: string
-          created_at: string | null
+          created_at: string
           date: string
           id: number
-          note: string | null
-          user_id: string | null
+          notes: string | null
+          updated_at: string
+          user_id: string
         }
         Insert: {
           amount: number
           category: string
-          created_at?: string | null
+          created_at?: string
           date: string
-          id?: never
-          note?: string | null
-          user_id?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string
+          user_id: string
         }
         Update: {
           amount?: number
           category?: string
-          created_at?: string | null
+          created_at?: string
           date?: string
-          id?: never
-          note?: string | null
-          user_id?: string | null
+          id?: number
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
       profiles: {
         Row: {
           avatar_url: string | null
-          created_at: string | null
-          currency: string | null
+          created_at: string
+          currency: string
           full_name: string | null
           id: string
+          updated_at: string
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string | null
-          currency?: string | null
+          created_at?: string
+          currency?: string
           full_name?: string | null
           id: string
+          updated_at?: string
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string | null
-          currency?: string | null
+          created_at?: string
+          currency?: string
           full_name?: string | null
           id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -72,26 +78,29 @@ export type Database = {
         Row: {
           amount: number
           category: string
-          created_at: string | null
+          created_at: string
           date: string
           id: number
-          user_id: string | null
+          updated_at: string
+          user_id: string
         }
         Insert: {
           amount: number
-          category: string
-          created_at?: string | null
+          category?: string
+          created_at?: string
           date: string
-          id?: never
-          user_id?: string | null
+          id?: number
+          updated_at?: string
+          user_id: string
         }
         Update: {
           amount?: number
           category?: string
-          created_at?: string | null
+          created_at?: string
           date?: string
-          id?: never
-          user_id?: string | null
+          id?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

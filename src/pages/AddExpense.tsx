@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useApp } from "@/contexts/AppContext";
+import { useExpenses } from "@/hooks/useExpenses";
+import { useProfile } from "@/hooks/useProfile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +26,16 @@ const AddExpense = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
-  const { addExpense, formatCurrency } = useApp();
+  const { addExpense } = useExpenses();
+  const { profile } = useProfile();
+
+  const formatCurrency = (amount: number) => {
+    const currencySymbols: { [key: string]: string } = {
+      USD: '$', EUR: '€', GBP: '£', JPY: '¥', INR: '₹', CNY: '¥', CAD: 'C$', AUD: 'A$'
+    };
+    const symbol = currencySymbols[profile?.currency || 'USD'] || '$';
+    return `${symbol}${amount.toFixed(2)}`;
+  };
 
   const categories = [
     { value: "food", label: "Food & Dining", icon: "🍕" },
@@ -39,7 +49,7 @@ const AddExpense = () => {
     { value: "other", label: "Other", icon: "📝" },
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!amount || !category) {
       toast({
         title: "Missing information",
@@ -59,12 +69,12 @@ const AddExpense = () => {
       return;
     }
 
-    // Add expense using context
-    addExpense({
+    // Add expense using hook
+    await addExpense({
       amount: numericAmount,
       category,
-      note: notes,
-      date: date.toISOString(),
+      notes,
+      date: format(date, 'yyyy-MM-dd'),
     });
 
     const selectedCategory = categories.find(cat => cat.value === category);

@@ -6,7 +6,10 @@ import { HistorySection } from "@/components/HistorySection";
 import { ReportGenerator } from "@/components/ReportGenerator";
 import { DailySavingsTracker } from "@/components/DailySavingsTracker";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useApp } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { useExpenses } from "@/hooks/useExpenses";
+import { useSavings } from "@/hooks/useSavings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +39,18 @@ const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
-  const { currency, formatCurrency } = useApp();
+  const { signOut } = useAuth();
+  const { profile, updateProfile } = useProfile();
+  const { expenses } = useExpenses();
+  const { savings } = useSavings();
+
+  const formatCurrency = (amount: number) => {
+    const currencySymbols: { [key: string]: string } = {
+      USD: '$', EUR: '€', GBP: '£', JPY: '¥', INR: '₹', CNY: '¥', CAD: 'C$', AUD: 'A$'
+    };
+    const symbol = currencySymbols[profile?.currency || 'USD'] || '$';
+    return `${symbol}${amount.toFixed(2)}`;
+  };
 
   const savingsCategories = [
     { id: "daily", title: "Daily Savings", description: "Track daily", icon: PiggyBank, color: "bg-emerald-100 hover:bg-emerald-200 border-emerald-200" },
@@ -56,6 +70,11 @@ const Settings = () => {
       title: "Settings saved",
       description: "Your preferences have been updated.",
     });
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/auth');
   };
 
   return (
@@ -160,7 +179,7 @@ const Settings = () => {
               <div className="space-y-2">
                 <Label>Current Currency</Label>
                 <div className="text-lg font-medium text-primary">
-                  {currency} - {formatCurrency(0).replace('0.00', 'Format')}
+                  {profile?.currency || 'USD'} - {formatCurrency(0).replace('0.00', 'Format')}
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
@@ -176,7 +195,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="budget">Daily Budget Limit ({currency})</Label>
+                <Label htmlFor="budget">Daily Budget Limit ({profile?.currency || 'USD'})</Label>
                 <Input
                   id="budget"
                   type="number"
@@ -236,9 +255,14 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-              <Button onClick={handleSaveSettings} className="w-full">
-                Save Settings
-              </Button>
+              <div className="flex gap-3">
+                <Button onClick={handleSaveSettings} className="flex-1">
+                  Save Settings
+                </Button>
+                <Button onClick={handleLogout} variant="destructive" className="flex-1">
+                  Logout
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="history">

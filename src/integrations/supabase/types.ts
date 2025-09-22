@@ -18,59 +18,53 @@ export type Database = {
         Row: {
           amount: number
           category: string
-          created_at: string
+          created_at: string | null
           date: string
           id: number
-          notes: string | null
-          updated_at: string
-          user_id: string
+          note: string | null
+          user_id: string | null
         }
         Insert: {
           amount: number
           category: string
-          created_at?: string
+          created_at?: string | null
           date: string
-          id?: number
-          notes?: string | null
-          updated_at?: string
-          user_id: string
+          id?: never
+          note?: string | null
+          user_id?: string | null
         }
         Update: {
           amount?: number
           category?: string
-          created_at?: string
+          created_at?: string | null
           date?: string
-          id?: number
-          notes?: string | null
-          updated_at?: string
-          user_id?: string
+          id?: never
+          note?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
           avatar_url: string | null
-          created_at: string
-          currency: string
+          created_at: string | null
+          currency: string | null
           full_name: string | null
           id: string
-          updated_at: string
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string
-          currency?: string
+          created_at?: string | null
+          currency?: string | null
           full_name?: string | null
           id: string
-          updated_at?: string
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string
-          currency?: string
+          created_at?: string | null
+          currency?: string | null
           full_name?: string | null
           id?: string
-          updated_at?: string
         }
         Relationships: []
       }
@@ -78,29 +72,26 @@ export type Database = {
         Row: {
           amount: number
           category: string
-          created_at: string
+          created_at: string | null
           date: string
           id: number
-          updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           amount: number
-          category?: string
-          created_at?: string
+          category: string
+          created_at?: string | null
           date: string
-          id?: number
-          updated_at?: string
-          user_id: string
+          id?: never
+          user_id?: string | null
         }
         Update: {
           amount?: number
           category?: string
-          created_at?: string
+          created_at?: string | null
           date?: string
-          id?: number
-          updated_at?: string
-          user_id?: string
+          id?: never
+          user_id?: string | null
         }
         Relationships: []
       }

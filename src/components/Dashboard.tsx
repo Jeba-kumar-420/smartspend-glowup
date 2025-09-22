@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SpendingChart } from "./SpendingChart";
 import { DailyChartsSection } from "./DailyChartsSection";
 import { ReportGenerator } from "./ReportGenerator";
+import { ExpenseAnalytics } from "./ExpenseAnalytics";
 import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
 import { User, Plus, History, TrendingUp } from "lucide-react";
@@ -147,6 +148,9 @@ export const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Analytics Dashboard */}
+      <ExpenseAnalytics />
 
       {/* Daily Charts Section */}
       <DailyChartsSection />

@@ -17,6 +17,7 @@ import { CalendarIcon, Receipt } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { CSVExport } from "@/components/CSVExport";
 
 const AddExpense = () => {
   const [amount, setAmount] = useState("");
@@ -201,6 +202,16 @@ const AddExpense = () => {
                 Save Expense
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Export Options */}
+        <Card className="max-w-md mx-auto mt-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Export Data</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CSVExport />
           </CardContent>
         </Card>
       </main>

@@ -44,7 +44,7 @@ export const useExpenses = () => {
         amount: parseFloat(expense.amount.toString()),
         category: expense.category,
         date: expense.date,
-        notes: expense.notes || '',
+        notes: expense.note || '',
         userId: expense.user_id || user.id,
       }));
       
@@ -72,7 +72,7 @@ export const useExpenses = () => {
           amount: expenseData.amount,
           category: expenseData.category,
           date: expenseData.date,
-          notes: expenseData.notes || null,
+          note: expenseData.notes || null,
         })
         .select()
         .single();
@@ -84,7 +84,7 @@ export const useExpenses = () => {
         amount: parseFloat(data.amount.toString()),
         category: data.category,
         date: data.date,
-        notes: data.notes || '',
+        notes: data.note || '',
         userId: data.user_id || user.id,
       };
 
@@ -113,7 +113,7 @@ export const useExpenses = () => {
           amount: expenseData.amount,
           category: expenseData.category,
           date: expenseData.date,
-          notes: expenseData.notes || null,
+          note: expenseData.notes || null,
         })
         .eq('id', parseInt(id))
         .eq('user_id', user.id);

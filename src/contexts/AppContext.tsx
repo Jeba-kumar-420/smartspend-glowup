@@ -125,7 +125,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         id: expense.id.toString(),
         amount: parseFloat(expense.amount.toString()),
         category: expense.category,
-        note: expense.notes || undefined,
+        note: expense.note || undefined,
         date: expense.date,
         userId: expense.user_id || authUser.id,
       }));
@@ -211,7 +211,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         id: data.id.toString(),
         amount: parseFloat(data.amount.toString()),
         category: data.category,
-        note: data.notes || undefined,
+        note: data.note || undefined,
         date: data.date,
         userId: data.user_id || authUser.id,
       };

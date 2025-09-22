@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Plus, PiggyBank, Settings } from "lucide-react";
+import { Home, Plus, PiggyBank, Settings, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const BottomNavigation = () => {
@@ -8,13 +8,14 @@ export const BottomNavigation = () => {
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
     { path: "/add-expense", icon: Plus, label: "Add" },
+    { path: "/budget", icon: Target, label: "Budget" },
     { path: "/savings", icon: PiggyBank, label: "Savings" },
     { path: "/settings", icon: Settings, label: "Settings" },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border">
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center justify-around h-16 max-w-md mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -24,7 +25,7 @@ export const BottomNavigation = () => {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex flex-col items-center justify-center px-3 py-2 text-xs transition-colors",
+                "flex flex-col items-center justify-center px-2 py-2 text-xs transition-colors min-w-0",
                 isActive 
                   ? "text-primary" 
                   : "text-muted-foreground hover:text-foreground"

@@ -5,6 +5,7 @@ import { SpendingChart } from "./SpendingChart";
 import { DailyChartsSection } from "./DailyChartsSection";
 import { ReportGenerator } from "./ReportGenerator";
 import { ExpenseAnalytics } from "./ExpenseAnalytics";
+import { StatsCards } from "./StatsCards";
 import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
 import { User, Plus, History, TrendingUp } from "lucide-react";
@@ -93,41 +94,8 @@ export const Dashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Spending Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Today</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-success">
-              {formatCurrency(getTotalSpending('today'))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-info/10 to-info/5 border-info/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Week</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-info">
-              {formatCurrency(getTotalSpending('week'))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Month</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-warning">
-              {formatCurrency(getTotalSpending('month'))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Stats Cards */}
+      <StatsCards />
 
       {/* Daily Savings Chart */}
       <Card>

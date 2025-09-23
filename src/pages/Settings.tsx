@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { useExpenses } from "@/hooks/useExpenses";
 import { useSavings } from "@/hooks/useSavings";
+import { CategoryManagement } from "@/components/CategoryManagement";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,11 +93,16 @@ const Settings = () => {
 
         <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6">
               <TabsTrigger value="settings" className="gap-1 sm:gap-2 text-xs sm:text-sm">
                 <Settings2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Settings</span>
                 <span className="sm:hidden">Set</span>
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Categories</span>
+                <span className="sm:hidden">Cat</span>
               </TabsTrigger>
               <TabsTrigger value="history" className="gap-1 sm:gap-2 text-xs sm:text-sm">
                 <History className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -114,6 +120,10 @@ const Settings = () => {
                 <span className="sm:hidden">Save</span>
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="categories" className="space-y-6">
+              <CategoryManagement />
+            </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
           {/* Savings Options */}

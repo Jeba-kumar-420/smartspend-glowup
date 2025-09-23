@@ -5,6 +5,8 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useExpenses } from "@/hooks/useExpenses";
 import { useProfile } from "@/hooks/useProfile";
+import { SavingsGoals } from "@/components/SavingsGoals";
+import { ExpenseFilters } from "@/components/ExpenseFilters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -204,6 +206,9 @@ const AddExpense = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Expense Filters */}
+        <ExpenseFilters />
 
         {/* Export Options */}
         <Card className="max-w-md mx-auto mt-6">

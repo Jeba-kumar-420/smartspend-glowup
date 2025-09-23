@@ -1,3 +1,4 @@
+import { ToastContainer } from "@/components/Toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,20 +30,21 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/add-expense" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
-            <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
-            <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/savings/:category" element={<ProtectedRoute><SavingsDetail /></ProtectedRoute>} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+              <Routes>
+                <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                <Route path="/add-expense" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
+                <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
+                <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/savings/:category" element={<ProtectedRoute><SavingsDetail /></ProtectedRoute>} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <ToastContainer />
+            </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
     </AppProvider>

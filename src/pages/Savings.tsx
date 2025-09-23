@@ -4,6 +4,7 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
+import { SavingsGoals } from "@/components/SavingsGoals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,6 +66,9 @@ const Savings = () => {
         </div>
 
         <div className="max-w-2xl mx-auto space-y-6">
+          {/* Savings Goals */}
+          <SavingsGoals />
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">

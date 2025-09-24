@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 import { useApp } from "@/contexts/AppContext";
 import { useBudget } from "@/hooks/useBudget";
 import { useSavings } from "@/hooks/useSavings";
@@ -31,78 +32,87 @@ export const StatsCards = () => {
   const budgetRemaining = currentBudget ? currentBudget.monthly_budget - monthlySpending : 0;
   const budgetProgress = currentBudget ? (monthlySpending / currentBudget.monthly_budget) * 100 : 0;
 
+  const statsCards = [
+    {
+      id: 'monthly',
+      title: 'This Month',
+      value: formatCurrency(monthlySpending),
+      icon: DollarSign,
+      gradient: 'from-primary/10 to-primary/5',
+      border: 'border-primary/20',
+      textColor: 'text-primary'
+    },
+    {
+      id: 'budget',
+      title: 'Budget Left',
+      value: currentBudget ? formatCurrency(Math.max(0, budgetRemaining)) : 'No Budget',
+      icon: Target,
+      gradient: 'from-success/10 to-success/5',
+      border: 'border-success/20',
+      textColor: 'text-success',
+      extra: currentBudget ? (
+        <div className="mt-2">
+          <Progress value={Math.min(100, budgetProgress)} className="h-2" />
+          <p className="text-xs text-muted-foreground mt-1">
+            {budgetProgress.toFixed(0)}% of budget used
+          </p>
+        </div>
+      ) : null
+    },
+    {
+      id: 'category',
+      title: 'Top Category',
+      value: topCategory.name,
+      subtitle: formatCurrency(topCategory.amount),
+      icon: TrendingUp,
+      gradient: 'from-warning/10 to-warning/5',
+      border: 'border-warning/20',
+      textColor: 'text-warning'
+    },
+    {
+      id: 'savings',
+      title: 'Total Saved',
+      value: formatCurrency(totalSavings),
+      icon: PiggyBank,
+      gradient: 'from-info/10 to-info/5',
+      border: 'border-info/20',
+      textColor: 'text-info'
+    }
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Monthly Spending */}
-      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
-            This Month
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-primary">
-            {formatCurrency(monthlySpending)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Budget Remaining */}
-      <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            Budget Left
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-success">
-            {currentBudget ? formatCurrency(Math.max(0, budgetRemaining)) : 'No Budget'}
-          </div>
-          {currentBudget && (
-            <div className="mt-2">
-              <Progress value={Math.min(100, budgetProgress)} className="h-2" />
-              <p className="text-xs text-muted-foreground mt-1">
-                {budgetProgress.toFixed(0)}% of budget used
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Top Category */}
-      <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Top Category
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-lg font-bold text-warning capitalize">
-            {topCategory.name}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {formatCurrency(topCategory.amount)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Total Savings */}
-      <Card className="bg-gradient-to-br from-info/10 to-info/5 border-info/20">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-            <PiggyBank className="h-4 w-4" />
-            Total Saved
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-info">
-            {formatCurrency(totalSavings)}
-          </div>
-        </CardContent>
-      </Card>
+      {statsCards.map((card, index) => {
+        const Icon = card.icon;
+        return (
+          <motion.div
+            key={card.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <Card className={`bg-gradient-to-br ${card.gradient} ${card.border} hover:shadow-lg transition-shadow duration-300`}>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  {card.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-bold ${card.textColor} ${card.id === 'category' ? 'text-lg capitalize' : ''}`}>
+                  {card.value}
+                </div>
+                {card.subtitle && (
+                  <div className="text-sm text-muted-foreground">
+                    {card.subtitle}
+                  </div>
+                )}
+                {card.extra}
+              </CardContent>
+            </Card>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

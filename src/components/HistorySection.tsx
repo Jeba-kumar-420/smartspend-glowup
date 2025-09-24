@@ -67,6 +67,11 @@ export const HistorySection = () => {
                           <Badge variant="outline" className={`${getCategoryColor(expense.category)} text-xs`}>
                             {expense.category}
                           </Badge>
+                          {expense.recurringInterval && expense.recurringInterval !== 'none' && (
+                            <Badge variant="secondary" className="text-xs">
+                              {expense.recurringInterval}
+                            </Badge>
+                          )}
                           <span className="text-sm text-muted-foreground">
                             {format(new Date(expense.date), 'MMM dd, yyyy')}
                           </span>

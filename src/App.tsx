@@ -13,6 +13,7 @@ import AddExpense from "./pages/AddExpense";
 import Budget from "./pages/Budget";
 import Savings from "./pages/Savings";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import SavingsDetail from "./pages/SavingsDetail";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
                 <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/savings/:category" element={<ProtectedRoute><SavingsDetail /></ProtectedRoute>} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />

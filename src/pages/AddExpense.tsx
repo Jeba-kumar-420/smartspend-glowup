@@ -26,6 +26,7 @@ const AddExpense = () => {
   const [category, setCategory] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [notes, setNotes] = useState("");
+  const [recurringInterval, setRecurringInterval] = useState("none");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -76,8 +77,9 @@ const AddExpense = () => {
     await addExpense({
       amount: numericAmount,
       category,
-      notes,
+      note: notes,
       date: format(date, 'yyyy-MM-dd'),
+      recurringInterval,
     });
 
     const selectedCategory = categories.find(cat => cat.value === category);
@@ -90,6 +92,7 @@ const AddExpense = () => {
     setAmount("");
     setCategory("");
     setNotes("");
+    setRecurringInterval("none");
     setDate(new Date());
     
     // Navigate back to dashboard
@@ -183,6 +186,21 @@ const AddExpense = () => {
                   />
                 </PopoverContent>
               </Popover>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="recurring">Recurring</Label>
+              <Select value={recurringInterval} onValueChange={setRecurringInterval}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select repeat frequency" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">

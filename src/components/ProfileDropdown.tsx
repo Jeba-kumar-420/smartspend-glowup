@@ -81,9 +81,9 @@ export const ProfileDropdown = () => {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
-          <span>View Profile</span>
+          <span>Profile Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />

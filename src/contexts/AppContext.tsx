@@ -18,8 +18,10 @@ export interface Expense {
   amount: number;
   category: string;
   note?: string;
+  notes?: string;
   date: string;
   userId: string;
+  recurringInterval?: string;
 }
 
 export interface CurrencyHistory {
@@ -128,6 +130,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         note: expense.note || undefined,
         date: expense.date,
         userId: expense.user_id || authUser.id,
+        recurringInterval: expense.recurring_interval || 'none',
       }));
       
       setExpenses(formattedExpenses);
@@ -199,8 +202,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           user_id: authUser.id,
           amount: expenseData.amount,
           category: expenseData.category,
-          note: expenseData.note || null,
+          note: expenseData.note || expenseData.notes || null,
           date: expenseData.date,
+          recurring_interval: expenseData.recurringInterval || 'none',
         })
         .select()
         .single();
@@ -214,6 +218,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         note: data.note || undefined,
         date: data.date,
         userId: data.user_id || authUser.id,
+        recurringInterval: data.recurring_interval || 'none',
       };
 
       setExpenses(prev => [newExpense, ...prev]);

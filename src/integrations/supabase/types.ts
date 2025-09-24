@@ -52,6 +52,7 @@ export type Database = {
           date: string
           id: number
           note: string | null
+          recurring_interval: string | null
           user_id: string | null
         }
         Insert: {
@@ -61,6 +62,7 @@ export type Database = {
           date: string
           id?: never
           note?: string | null
+          recurring_interval?: string | null
           user_id?: string | null
         }
         Update: {
@@ -70,6 +72,7 @@ export type Database = {
           date?: string
           id?: never
           note?: string | null
+          recurring_interval?: string | null
           user_id?: string | null
         }
         Relationships: []

@@ -10,6 +10,7 @@ export interface Expense {
   date: string;
   notes?: string;
   userId: string;
+  recurringInterval?: string;
 }
 
 export const useExpenses = () => {
@@ -46,6 +47,7 @@ export const useExpenses = () => {
         date: expense.date,
         notes: expense.note || '',
         userId: expense.user_id || user.id,
+        recurringInterval: expense.recurring_interval || 'none',
       }));
       
       setExpenses(formattedExpenses);
@@ -73,6 +75,7 @@ export const useExpenses = () => {
           category: expenseData.category,
           date: expenseData.date,
           note: expenseData.notes || null,
+          recurring_interval: expenseData.recurringInterval || 'none',
         })
         .select()
         .single();
@@ -86,6 +89,7 @@ export const useExpenses = () => {
         date: data.date,
         notes: data.note || '',
         userId: data.user_id || user.id,
+        recurringInterval: data.recurring_interval || 'none',
       };
 
       setExpenses(prev => [newExpense, ...prev]);
@@ -114,6 +118,7 @@ export const useExpenses = () => {
           category: expenseData.category,
           date: expenseData.date,
           note: expenseData.notes || null,
+          recurring_interval: expenseData.recurringInterval || 'none',
         })
         .eq('id', parseInt(id))
         .eq('user_id', user.id);

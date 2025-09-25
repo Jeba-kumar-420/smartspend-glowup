@@ -77,7 +77,7 @@ const AddExpense = () => {
     await addExpense({
       amount: numericAmount,
       category,
-      note: notes,
+      notes: notes,
       date: format(date, 'yyyy-MM-dd'),
       recurringInterval,
     });

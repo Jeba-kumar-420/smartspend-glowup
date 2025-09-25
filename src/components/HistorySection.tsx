@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, DollarSign, ArrowUpDown, Calendar } from "lucide-react";
 import { format } from "date-fns";
+import { Receipt, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
 
 export const HistorySection = () => {
   const { expenses, currencyHistory, formatCurrency } = useApp();
@@ -57,37 +59,47 @@ export const HistorySection = () => {
             <ScrollArea className="h-80">
               {sortedExpenses.length > 0 ? (
                 <div className="space-y-3">
-                  {sortedExpenses.map((expense) => (
-                    <div
-                      key={expense.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors gap-2"
-                    >
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-1">
-                          <Badge variant="outline" className={`${getCategoryColor(expense.category)} text-xs`}>
-                            {expense.category}
-                          </Badge>
-                          {expense.recurringInterval && expense.recurringInterval !== 'none' && (
-                            <Badge variant="secondary" className="text-xs">
-                              {expense.recurringInterval}
-                            </Badge>
-                          )}
-                          <span className="text-sm text-muted-foreground">
-                            {format(new Date(expense.date), 'MMM dd, yyyy')}
-                          </span>
-                        </div>
-                        {expense.note && (
-                          <p className="text-sm text-muted-foreground">
-                            {expense.note}
-                          </p>
-                        )}
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <div className="font-semibold text-destructive">
-                          -{formatCurrency(expense.amount)}
-                        </div>
-                      </div>
-                    </div>
+                   {sortedExpenses.map((expense, index) => (
+                     <motion.div
+                       key={expense.id}
+                       initial={{ opacity: 0, y: 20 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       transition={{ duration: 0.3, delay: index * 0.05 }}
+                       className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors gap-2"
+                     >
+                       <div className="flex-1">
+                         <div className="flex flex-wrap items-center gap-2 mb-1">
+                           <Badge variant="outline" className={`${getCategoryColor(expense.category)} text-xs`}>
+                             {expense.category}
+                           </Badge>
+                           {expense.recurringInterval && expense.recurringInterval !== 'none' && (
+                             <Badge variant="outline" className="text-xs">
+                               <RotateCcw className="h-3 w-3 mr-1" />
+                               {expense.recurringInterval}
+                             </Badge>
+                           )}
+                           {expense.source === 'receipt' && (
+                             <Badge variant="secondary" className="text-xs">
+                               <Receipt className="h-3 w-3 mr-1" />
+                               Scanned
+                             </Badge>
+                           )}
+                           <span className="text-sm text-muted-foreground">
+                             {format(new Date(expense.date), 'MMM dd, yyyy')}
+                           </span>
+                         </div>
+                         {expense.notes && (
+                           <p className="text-sm text-muted-foreground">
+                             {expense.notes}
+                           </p>
+                         )}
+                       </div>
+                       <div className="text-left sm:text-right">
+                         <div className="font-semibold text-destructive">
+                           -{formatCurrency(expense.amount)}
+                         </div>
+                       </div>
+                     </motion.div>
                   ))}
                 </div>
               ) : (

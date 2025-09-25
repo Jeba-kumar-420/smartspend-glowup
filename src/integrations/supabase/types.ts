@@ -52,7 +52,10 @@ export type Database = {
           date: string
           id: number
           note: string | null
+          ocr_parsed: Json | null
+          ocr_raw: string | null
           recurring_interval: string | null
+          source: string | null
           user_id: string | null
         }
         Insert: {
@@ -62,7 +65,10 @@ export type Database = {
           date: string
           id?: never
           note?: string | null
+          ocr_parsed?: Json | null
+          ocr_raw?: string | null
           recurring_interval?: string | null
+          source?: string | null
           user_id?: string | null
         }
         Update: {
@@ -72,7 +78,10 @@ export type Database = {
           date?: string
           id?: never
           note?: string | null
+          ocr_parsed?: Json | null
+          ocr_raw?: string | null
           recurring_interval?: string | null
+          source?: string | null
           user_id?: string | null
         }
         Relationships: []

@@ -11,6 +11,9 @@ export interface Expense {
   notes?: string;
   userId: string;
   recurringInterval?: string;
+  source?: string;
+  ocrRaw?: string;
+  ocrParsed?: any;
 }
 
 export const useExpenses = () => {
@@ -48,6 +51,9 @@ export const useExpenses = () => {
         notes: expense.note || '',
         userId: expense.user_id || user.id,
         recurringInterval: expense.recurring_interval || 'none',
+        source: expense.source || 'manual',
+        ocrRaw: expense.ocr_raw || '',
+        ocrParsed: expense.ocr_parsed || null,
       }));
       
       setExpenses(formattedExpenses);
@@ -76,6 +82,9 @@ export const useExpenses = () => {
           date: expenseData.date,
           note: expenseData.notes || null,
           recurring_interval: expenseData.recurringInterval || 'none',
+          source: expenseData.source || 'manual',
+          ocr_raw: expenseData.ocrRaw || null,
+          ocr_parsed: expenseData.ocrParsed || null,
         })
         .select()
         .single();
@@ -90,6 +99,9 @@ export const useExpenses = () => {
         notes: data.note || '',
         userId: data.user_id || user.id,
         recurringInterval: data.recurring_interval || 'none',
+        source: data.source || 'manual',
+        ocrRaw: data.ocr_raw || '',
+        ocrParsed: data.ocr_parsed || null,
       };
 
       setExpenses(prev => [newExpense, ...prev]);
@@ -119,6 +131,9 @@ export const useExpenses = () => {
           date: expenseData.date,
           note: expenseData.notes || null,
           recurring_interval: expenseData.recurringInterval || 'none',
+          source: expenseData.source || 'manual',
+          ocr_raw: expenseData.ocrRaw || null,
+          ocr_parsed: expenseData.ocrParsed || null,
         })
         .eq('id', parseInt(id))
         .eq('user_id', user.id);

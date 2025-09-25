@@ -22,6 +22,9 @@ export interface Expense {
   date: string;
   userId: string;
   recurringInterval?: string;
+  source?: string;
+  ocrRaw?: string;
+  ocrParsed?: any;
 }
 
 export interface CurrencyHistory {

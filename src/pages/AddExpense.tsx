@@ -20,6 +20,8 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { CSVExport } from "@/components/CSVExport";
+import { ReceiptScanner } from "@/components/ReceiptScanner";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AddExpense = () => {
   const [amount, setAmount] = useState("");
@@ -27,6 +29,7 @@ const AddExpense = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [notes, setNotes] = useState("");
   const [recurringInterval, setRecurringInterval] = useState("none");
+  const [showReceiptScanner, setShowReceiptScanner] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
@@ -80,6 +83,7 @@ const AddExpense = () => {
       notes: notes,
       date: format(date, 'yyyy-MM-dd'),
       recurringInterval,
+      source: 'manual',
     });
 
     const selectedCategory = categories.find(cat => cat.value === category);
@@ -97,6 +101,49 @@ const AddExpense = () => {
     
     // Navigate back to dashboard
     navigate("/");
+  };
+
+  const handleReceiptScan = (expenseData: any) => {
+    setAmount(expenseData.amount.toString());
+    setCategory(expenseData.category);
+    setDate(new Date(expenseData.date));
+    setNotes(expenseData.notes);
+    setRecurringInterval('none');
+    setShowReceiptScanner(false);
+    
+    toast({
+      title: "Receipt data loaded!",
+      description: "Review and save the extracted expense details",
+    });
+  };
+
+  const handleSaveReceiptExpense = async (expenseData: any) => {
+    try {
+      await addExpense({
+        amount: expenseData.amount,
+        category: expenseData.category,
+        notes: expenseData.notes,
+        date: expenseData.date,
+        recurringInterval: 'none',
+        source: expenseData.source,
+        ocrRaw: expenseData.ocrRaw,
+        ocrParsed: expenseData.ocrParsed,
+      });
+
+      toast({
+        title: "Receipt expense saved!",
+        description: `Added ₹${expenseData.amount} from receipt scan`,
+      });
+
+      setShowReceiptScanner(false);
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "Failed to save expense",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -118,10 +165,26 @@ const AddExpense = () => {
           <p className="text-sm sm:text-base text-muted-foreground">Record your spending and track your budget</p>
         </div>
 
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle className="text-lg">New Expense</CardTitle>
-          </CardHeader>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle className="text-lg">New Expense</CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowReceiptScanner(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Receipt className="h-4 w-4" />
+                  Scan Receipt
+                </Button>
+              </div>
+            </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="amount">Amount *</Label>
@@ -224,6 +287,7 @@ const AddExpense = () => {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Expense Filters */}
         <ExpenseFilters />
@@ -238,6 +302,15 @@ const AddExpense = () => {
           </CardContent>
         </Card>
       </main>
+
+      <AnimatePresence>
+        {showReceiptScanner && (
+          <ReceiptScanner
+            onSave={handleSaveReceiptExpense}
+            onClose={() => setShowReceiptScanner(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <BottomNavigation />
     </div>

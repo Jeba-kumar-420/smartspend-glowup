@@ -49,11 +49,14 @@ export type Database = {
           amount: number
           category: string
           created_at: string | null
+          currency_code: string | null
           date: string
+          exchange_rate: number | null
           id: number
           note: string | null
           ocr_parsed: Json | null
           ocr_raw: string | null
+          original_amount: number | null
           recurring_interval: string | null
           source: string | null
           user_id: string | null
@@ -62,11 +65,14 @@ export type Database = {
           amount: number
           category: string
           created_at?: string | null
+          currency_code?: string | null
           date: string
+          exchange_rate?: number | null
           id?: never
           note?: string | null
           ocr_parsed?: Json | null
           ocr_raw?: string | null
+          original_amount?: number | null
           recurring_interval?: string | null
           source?: string | null
           user_id?: string | null
@@ -75,14 +81,44 @@ export type Database = {
           amount?: number
           category?: string
           created_at?: string | null
+          currency_code?: string | null
           date?: string
+          exchange_rate?: number | null
           id?: never
           note?: string | null
           ocr_parsed?: Json | null
           ocr_raw?: string | null
+          original_amount?: number | null
           recurring_interval?: string | null
           source?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }

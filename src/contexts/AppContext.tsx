@@ -25,6 +25,9 @@ export interface Expense {
   source?: string;
   ocrRaw?: string;
   ocrParsed?: any;
+  currencyCode?: string;
+  originalAmount?: number;
+  exchangeRate?: number;
 }
 
 export interface CurrencyHistory {
@@ -134,6 +137,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         date: expense.date,
         userId: expense.user_id || authUser.id,
         recurringInterval: expense.recurring_interval || 'none',
+        source: expense.source || 'manual',
+        ocrRaw: expense.ocr_raw || undefined,
+        ocrParsed: expense.ocr_parsed || undefined,
+        currencyCode: expense.currency_code || 'USD',
+        originalAmount: expense.original_amount ? parseFloat(expense.original_amount.toString()) : undefined,
+        exchangeRate: expense.exchange_rate ? parseFloat(expense.exchange_rate.toString()) : 1.0,
       }));
       
       setExpenses(formattedExpenses);
@@ -208,6 +217,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           note: expenseData.note || expenseData.notes || null,
           date: expenseData.date,
           recurring_interval: expenseData.recurringInterval || 'none',
+          source: expenseData.source || 'manual',
+          ocr_raw: expenseData.ocrRaw || null,
+          ocr_parsed: expenseData.ocrParsed || null,
+          currency_code: expenseData.currencyCode || currency,
+          original_amount: expenseData.originalAmount || null,
+          exchange_rate: expenseData.exchangeRate || 1.0,
         })
         .select()
         .single();
@@ -222,6 +237,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         date: data.date,
         userId: data.user_id || authUser.id,
         recurringInterval: data.recurring_interval || 'none',
+        source: data.source || 'manual',
+        ocrRaw: data.ocr_raw || undefined,
+        ocrParsed: data.ocr_parsed || undefined,
+        currencyCode: data.currency_code || 'USD',
+        originalAmount: data.original_amount ? parseFloat(data.original_amount.toString()) : undefined,
+        exchangeRate: data.exchange_rate ? parseFloat(data.exchange_rate.toString()) : 1.0,
       };
 
       setExpenses(prev => [newExpense, ...prev]);
@@ -250,6 +271,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           category: expenseData.category,
           note: expenseData.note || null,
           date: expenseData.date,
+          currency_code: expenseData.currencyCode,
+          original_amount: expenseData.originalAmount,
+          exchange_rate: expenseData.exchangeRate,
         })
         .eq('id', parseInt(id))
         .eq('user_id', authUser.id);

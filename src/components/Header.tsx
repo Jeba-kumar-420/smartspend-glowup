@@ -1,7 +1,10 @@
+import React from "react";
 import { Switch } from "@/components/ui/switch";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { CurrencySelector } from "./CurrencySelector";
+import { NotificationBell } from "./NotificationBell";
 import { Receipt, Moon, Sun } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -9,6 +12,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ isDarkMode, onToggleDarkMode }: HeaderProps) => {
+  const { user } = useAuth();
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
@@ -31,6 +35,9 @@ export const Header = ({ isDarkMode, onToggleDarkMode }: HeaderProps) => {
             <div className="hidden sm:block">
               <CurrencySelector />
             </div>
+            
+            {/* Notifications Bell */}
+            {user && <NotificationBell />}
             
             {/* Dark Mode Toggle */}
             <div className="flex items-center space-x-1 sm:space-x-2">

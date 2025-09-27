@@ -27,10 +27,10 @@ export const ExpenseAnalytics = () => {
     return Object.entries(categoryTotals)
       .map(([category, amount]) => ({
         name: category,
-        value: amount,
-        formatted: formatCurrency(amount)
+        value: Number(amount),
+        formatted: formatCurrency(Number(amount))
       }))
-      .sort((a, b) => b.value - a.value);
+      .sort((a, b) => Number(b.value) - Number(a.value));
   }, [expenses, formatCurrency]);
 
   // Bar chart data - expenses by week for last 4 weeks

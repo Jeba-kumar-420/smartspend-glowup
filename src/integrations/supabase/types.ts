@@ -14,7 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          currency_code: string | null
+          date: string
+          exchange_rate: number | null
+          id: string
+          note: string | null
+          ocr_parsed: Json | null
+          ocr_raw: string | null
+          original_amount: number | null
+          recurring_interval: string | null
+          source: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          currency_code?: string | null
+          date?: string
+          exchange_rate?: number | null
+          id?: string
+          note?: string | null
+          ocr_parsed?: Json | null
+          ocr_raw?: string | null
+          original_amount?: number | null
+          recurring_interval?: string | null
+          source?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          currency_code?: string | null
+          date?: string
+          exchange_rate?: number | null
+          id?: string
+          note?: string | null
+          ocr_parsed?: Json | null
+          ocr_raw?: string | null
+          original_amount?: number | null
+          recurring_interval?: string | null
+          source?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          currency: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

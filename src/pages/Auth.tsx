@@ -135,13 +135,14 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-background flex items-center justify-center px-4 py-6 sm:p-6 overflow-x-hidden">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
       >
-        <Card className="w-full max-w-md">
+        <Card className="w-full shadow-lg">
           <CardHeader className="text-center">
             <motion.div
               initial={{ opacity: 0, y: -20 }}

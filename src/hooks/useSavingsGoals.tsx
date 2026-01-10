@@ -12,6 +12,17 @@ export interface SavingsGoal {
   created_at: string;
 }
 
+interface SavingsGoalRow {
+  id: string;
+  user_id: string;
+  title: string;
+  target_amount: number;
+  current_amount: number;
+  deadline: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export const useSavingsGoals = () => {
   const [goals, setGoals] = useState<SavingsGoal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,14 +39,23 @@ export const useSavingsGoals = () => {
 
     try {
       const { data, error } = await supabase
-        .from('savings_goals')
+        .from('savings_goals' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      setGoals(data || []);
+      const formattedGoals = ((data || []) as unknown as SavingsGoalRow[]).map(goal => ({
+        id: goal.id,
+        title: goal.title,
+        target_amount: Number(goal.target_amount),
+        current_amount: Number(goal.current_amount),
+        deadline: goal.deadline || undefined,
+        created_at: goal.created_at,
+      }));
+
+      setGoals(formattedGoals);
     } catch (error) {
       console.error('Error fetching savings goals:', error);
       toast({
@@ -58,7 +78,7 @@ export const useSavingsGoals = () => {
 
     try {
       const { data, error } = await supabase
-        .from('savings_goals')
+        .from('savings_goals' as any)
         .insert({
           user_id: user.id,
           title: goalData.title,
@@ -70,13 +90,14 @@ export const useSavingsGoals = () => {
 
       if (error) throw error;
 
+      const goalRow = data as unknown as SavingsGoalRow;
       const newGoal: SavingsGoal = {
-        id: data.id,
-        title: data.title,
-        target_amount: Number(data.target_amount),
-        current_amount: Number(data.current_amount),
-        deadline: data.deadline,
-        created_at: data.created_at,
+        id: goalRow.id,
+        title: goalRow.title,
+        target_amount: Number(goalRow.target_amount),
+        current_amount: Number(goalRow.current_amount),
+        deadline: goalRow.deadline || undefined,
+        created_at: goalRow.created_at,
       };
 
       setGoals(prev => [newGoal, ...prev]);
@@ -101,7 +122,7 @@ export const useSavingsGoals = () => {
 
     try {
       const { error } = await supabase
-        .from('savings_goals')
+        .from('savings_goals' as any)
         .update({ current_amount: amount })
         .eq('id', id)
         .eq('user_id', user.id);
@@ -132,7 +153,7 @@ export const useSavingsGoals = () => {
 
     try {
       const { error } = await supabase
-        .from('savings_goals')
+        .from('savings_goals' as any)
         .delete()
         .eq('id', id)
         .eq('user_id', user.id);

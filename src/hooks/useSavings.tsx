@@ -11,6 +11,15 @@ export interface Saving {
   userId: string;
 }
 
+interface SavingRow {
+  id: string;
+  user_id: string;
+  amount: number;
+  category: string;
+  date: string;
+  created_at: string;
+}
+
 export const useSavings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -31,19 +40,19 @@ export const useSavings = () => {
 
     try {
       const { data, error } = await supabase
-        .from('savings')
+        .from('savings' as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      const formattedSavings = data.map(saving => ({
-        id: saving.id.toString(),
-        amount: parseFloat(saving.amount.toString()),
+      const formattedSavings = ((data || []) as unknown as SavingRow[]).map(saving => ({
+        id: saving.id,
+        amount: Number(saving.amount),
         category: saving.category,
         date: saving.date,
-        userId: saving.user_id || user.id,
+        userId: saving.user_id,
       }));
       
       setSavings(formattedSavings);
@@ -64,7 +73,7 @@ export const useSavings = () => {
     
     try {
       const { data, error } = await supabase
-        .from('savings')
+        .from('savings' as any)
         .insert({
           user_id: user.id,
           amount: savingData.amount,
@@ -76,12 +85,13 @@ export const useSavings = () => {
 
       if (error) throw error;
 
+      const savingRow = data as unknown as SavingRow;
       const newSaving: Saving = {
-        id: data.id.toString(),
-        amount: parseFloat(data.amount.toString()),
-        category: data.category,
-        date: data.date,
-        userId: data.user_id || user.id,
+        id: savingRow.id,
+        amount: Number(savingRow.amount),
+        category: savingRow.category,
+        date: savingRow.date,
+        userId: savingRow.user_id,
       };
 
       setSavings(prev => [newSaving, ...prev]);
@@ -104,13 +114,13 @@ export const useSavings = () => {
 
     try {
       const { error } = await supabase
-        .from('savings')
+        .from('savings' as any)
         .update({
           amount: savingData.amount,
           category: savingData.category,
           date: savingData.date,
         })
-        .eq('id', parseInt(id))
+        .eq('id', id)
         .eq('user_id', user.id);
 
       if (error) throw error;
@@ -139,9 +149,9 @@ export const useSavings = () => {
 
     try {
       const { error } = await supabase
-        .from('savings')
+        .from('savings' as any)
         .delete()
-        .eq('id', parseInt(id))
+        .eq('id', id)
         .eq('user_id', user.id);
 
       if (error) throw error;

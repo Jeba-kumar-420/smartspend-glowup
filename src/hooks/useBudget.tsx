@@ -6,7 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 interface Budget {
   id: string;
   user_id: string;
-  monthly_budget: number;
+  category: string;
+  limit_amount: number;
   month: number;
   year: number;
   created_at: string;
@@ -53,12 +54,17 @@ export const useBudget = () => {
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
     
-    return budgets.find(budget => 
+    // Return total budget limit for current month
+    const monthBudgets = budgets.filter(budget => 
       budget.month === currentMonth && budget.year === currentYear
     );
+    
+    return monthBudgets.length > 0 
+      ? { monthly_budget: monthBudgets.reduce((sum, b) => sum + b.limit_amount, 0) }
+      : undefined;
   };
 
-  const setBudget = async (amount: number, month?: number, year?: number) => {
+  const setBudget = async (amount: number, month?: number, year?: number, category: string = 'General') => {
     if (!user) return { error: new Error('User not authenticated') };
 
     const now = new Date();
@@ -67,21 +73,21 @@ export const useBudget = () => {
 
     try {
       const existingBudget = budgets.find(b => 
-        b.month === targetMonth && b.year === targetYear
+        b.month === targetMonth && b.year === targetYear && b.category === category
       );
 
       if (existingBudget) {
         // Update existing budget
         const { error } = await supabase
           .from('budgets')
-          .update({ monthly_budget: amount })
+          .update({ limit_amount: amount })
           .eq('id', existingBudget.id);
 
         if (error) throw error;
 
         setBudgets(prev => prev.map(b => 
           b.id === existingBudget.id 
-            ? { ...b, monthly_budget: amount }
+            ? { ...b, limit_amount: amount }
             : b
         ));
       } else {
@@ -90,7 +96,8 @@ export const useBudget = () => {
           .from('budgets')
           .insert({
             user_id: user.id,
-            monthly_budget: amount,
+            category,
+            limit_amount: amount,
             month: targetMonth,
             year: targetYear
           })

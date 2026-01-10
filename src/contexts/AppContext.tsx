@@ -19,6 +19,7 @@ export interface Expense {
   category: string;
   note?: string;
   notes?: string;
+  title?: string;
   date: string;
   userId: string;
   recurringInterval?: string;
@@ -130,10 +131,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
       
       const formattedExpenses = data.map(expense => ({
-        id: expense.id.toString(),
+        id: expense.id,
         amount: parseFloat(expense.amount.toString()),
         category: expense.category,
         note: expense.note || undefined,
+        title: expense.title || undefined,
         date: expense.date,
         userId: expense.user_id || authUser.id,
         recurringInterval: expense.recurring_interval || 'none',
@@ -215,6 +217,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
           amount: expenseData.amount,
           category: expenseData.category,
           note: expenseData.note || expenseData.notes || null,
+          title: expenseData.title || null,
           date: expenseData.date,
           recurring_interval: expenseData.recurringInterval || 'none',
           source: expenseData.source || 'manual',
@@ -230,10 +233,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       const newExpense: Expense = {
-        id: data.id.toString(),
+        id: data.id,
         amount: parseFloat(data.amount.toString()),
         category: data.category,
         note: data.note || undefined,
+        title: data.title || undefined,
         date: data.date,
         userId: data.user_id || authUser.id,
         recurringInterval: data.recurring_interval || 'none',
@@ -264,18 +268,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (!authUser) return;
 
     try {
+      const updateData: any = {};
+      if (expenseData.amount !== undefined) updateData.amount = expenseData.amount;
+      if (expenseData.category !== undefined) updateData.category = expenseData.category;
+      if (expenseData.note !== undefined) updateData.note = expenseData.note;
+      if (expenseData.title !== undefined) updateData.title = expenseData.title;
+      if (expenseData.date !== undefined) updateData.date = expenseData.date;
+      if (expenseData.currencyCode !== undefined) updateData.currency_code = expenseData.currencyCode;
+      if (expenseData.originalAmount !== undefined) updateData.original_amount = expenseData.originalAmount;
+      if (expenseData.exchangeRate !== undefined) updateData.exchange_rate = expenseData.exchangeRate;
+
       const { error } = await supabase
         .from('expenses')
-        .update({
-          amount: expenseData.amount,
-          category: expenseData.category,
-          note: expenseData.note || null,
-          date: expenseData.date,
-          currency_code: expenseData.currencyCode,
-          original_amount: expenseData.originalAmount,
-          exchange_rate: expenseData.exchangeRate,
-        })
-        .eq('id', parseInt(id))
+        .update(updateData)
+        .eq('id', id)
         .eq('user_id', authUser.id);
 
       if (error) throw error;
@@ -306,7 +312,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase
         .from('expenses')
         .delete()
-        .eq('id', parseInt(id))
+        .eq('id', id)
         .eq('user_id', authUser.id);
 
       if (error) throw error;

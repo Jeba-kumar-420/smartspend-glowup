@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      budgets: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          limit_amount: number
+          month: number
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          limit_amount: number
+          month: number
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          limit_amount?: number
+          month?: number
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       expenses: {
         Row: {
           amount: number
@@ -29,6 +62,7 @@ export type Database = {
           original_amount: number | null
           recurring_interval: string | null
           source: string | null
+          title: string | null
           updated_at: string
           user_id: string
         }
@@ -46,6 +80,7 @@ export type Database = {
           original_amount?: number | null
           recurring_interval?: string | null
           source?: string | null
+          title?: string | null
           updated_at?: string
           user_id: string
         }
@@ -63,7 +98,35 @@ export type Database = {
           original_amount?: number | null
           recurring_interval?: string | null
           source?: string | null
+          title?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      income: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          income_date: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          income_date?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          income_date?: string
+          source?: string
           user_id?: string
         }
         Relationships: []

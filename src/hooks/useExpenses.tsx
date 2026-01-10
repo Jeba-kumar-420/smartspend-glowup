@@ -9,6 +9,7 @@ export interface Expense {
   category: string;
   date: string;
   notes?: string;
+  title?: string;
   userId: string;
   recurringInterval?: string;
   source?: string;
@@ -44,11 +45,12 @@ export const useExpenses = () => {
       if (error) throw error;
       
       const formattedExpenses = data.map(expense => ({
-        id: expense.id.toString(),
+        id: expense.id,
         amount: parseFloat(expense.amount.toString()),
         category: expense.category,
         date: expense.date,
         notes: expense.note || '',
+        title: expense.title || '',
         userId: expense.user_id || user.id,
         recurringInterval: expense.recurring_interval || 'none',
         source: expense.source || 'manual',
@@ -81,6 +83,7 @@ export const useExpenses = () => {
           category: expenseData.category,
           date: expenseData.date,
           note: expenseData.notes || null,
+          title: expenseData.title || null,
           recurring_interval: expenseData.recurringInterval || 'none',
           source: expenseData.source || 'manual',
           ocr_raw: expenseData.ocrRaw || null,
@@ -92,11 +95,12 @@ export const useExpenses = () => {
       if (error) throw error;
 
       const newExpense: Expense = {
-        id: data.id.toString(),
+        id: data.id,
         amount: parseFloat(data.amount.toString()),
         category: data.category,
         date: data.date,
         notes: data.note || '',
+        title: data.title || '',
         userId: data.user_id || user.id,
         recurringInterval: data.recurring_interval || 'none',
         source: data.source || 'manual',
@@ -123,19 +127,21 @@ export const useExpenses = () => {
     if (!user) return;
 
     try {
+      const updateData: any = {};
+      if (expenseData.amount !== undefined) updateData.amount = expenseData.amount;
+      if (expenseData.category !== undefined) updateData.category = expenseData.category;
+      if (expenseData.date !== undefined) updateData.date = expenseData.date;
+      if (expenseData.notes !== undefined) updateData.note = expenseData.notes;
+      if (expenseData.title !== undefined) updateData.title = expenseData.title;
+      if (expenseData.recurringInterval !== undefined) updateData.recurring_interval = expenseData.recurringInterval;
+      if (expenseData.source !== undefined) updateData.source = expenseData.source;
+      if (expenseData.ocrRaw !== undefined) updateData.ocr_raw = expenseData.ocrRaw;
+      if (expenseData.ocrParsed !== undefined) updateData.ocr_parsed = expenseData.ocrParsed;
+
       const { error } = await supabase
         .from('expenses')
-        .update({
-          amount: expenseData.amount,
-          category: expenseData.category,
-          date: expenseData.date,
-          note: expenseData.notes || null,
-          recurring_interval: expenseData.recurringInterval || 'none',
-          source: expenseData.source || 'manual',
-          ocr_raw: expenseData.ocrRaw || null,
-          ocr_parsed: expenseData.ocrParsed || null,
-        })
-        .eq('id', parseInt(id))
+        .update(updateData)
+        .eq('id', id)
         .eq('user_id', user.id);
 
       if (error) throw error;
@@ -166,7 +172,7 @@ export const useExpenses = () => {
       const { error } = await supabase
         .from('expenses')
         .delete()
-        .eq('id', parseInt(id))
+        .eq('id', id)
         .eq('user_id', user.id);
 
       if (error) throw error;

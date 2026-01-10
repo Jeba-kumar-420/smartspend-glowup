@@ -5,10 +5,12 @@ import { useToast } from "@/hooks/use-toast";
 
 export interface Profile {
   id: string;
+  user_id: string;
   full_name: string | null;
   avatar_url: string | null;
   currency: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export const useProfile = () => {
@@ -33,7 +35,7 @@ export const useProfile = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (error) {
@@ -44,7 +46,10 @@ export const useProfile = () => {
           throw error;
         }
       } else {
-        setProfile(data);
+        setProfile({
+          ...data,
+          avatar_url: null, // Not in schema, set default
+        });
       }
     } catch (error: any) {
       console.error('Error fetching profile:', error);
@@ -62,39 +67,48 @@ export const useProfile = () => {
     if (!user) return;
 
     try {
-      const newProfile = {
-        id: user.id,
-        full_name: user.user_metadata?.full_name || '',
-        currency: 'USD'
-      };
-
       const { data, error } = await supabase
         .from('profiles')
-        .insert(newProfile)
+        .insert({
+          id: user.id,
+          user_id: user.id,
+          full_name: user.user_metadata?.full_name || '',
+          currency: 'USD'
+        })
         .select()
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      setProfile({
+        ...data,
+        avatar_url: null,
+      });
     } catch (error: any) {
       console.error('Error creating profile:', error);
     }
   };
 
-  const updateProfile = async (updates: Partial<Profile>) => {
+  const updateProfile = async (updates: Partial<Omit<Profile, 'id' | 'user_id' | 'created_at' | 'updated_at'>>) => {
     if (!user || !profile) return;
 
     try {
+      const dbUpdates: any = {};
+      if (updates.full_name !== undefined) dbUpdates.full_name = updates.full_name;
+      if (updates.currency !== undefined) dbUpdates.currency = updates.currency;
+
       const { data, error } = await supabase
         .from('profiles')
-        .update(updates)
-        .eq('id', user.id)
+        .update(dbUpdates)
+        .eq('user_id', user.id)
         .select()
         .single();
 
       if (error) throw error;
       
-      setProfile(data);
+      setProfile({
+        ...data,
+        avatar_url: updates.avatar_url ?? profile.avatar_url,
+      });
       toast({
         title: "Success",
         description: "Profile updated successfully",

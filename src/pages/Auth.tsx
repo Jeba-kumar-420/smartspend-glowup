@@ -62,14 +62,65 @@ export default function Auth() {
         });
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      const message = error?.message || "";
+      if (message.includes("Failed to fetch") || message.includes("NetworkError")) {
+        toast({
+          title: "Connection error",
+          description: "Unable to connect to the server. Please check your internet connection.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Sign up error",
+          description: message || "An unexpected error occurred. Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const getErrorMessage = (error: any): { title: string; description: string } => {
+    const message = error?.message || "";
+    
+    // Network/connection errors
+    if (message.includes("Failed to fetch") || message.includes("NetworkError") || message.includes("fetch")) {
+      return {
+        title: "Connection error",
+        description: "Unable to connect to the server. Please check your internet connection and try again.",
+      };
+    }
+    
+    // Invalid credentials
+    if (message.includes("Invalid login credentials")) {
+      return {
+        title: "Invalid credentials",
+        description: "The email or password you entered is incorrect. Please try again.",
+      };
+    }
+    
+    // Email not confirmed
+    if (message.includes("Email not confirmed")) {
+      return {
+        title: "Email not verified",
+        description: "Please check your inbox and verify your email before signing in.",
+      };
+    }
+    
+    // Rate limiting
+    if (message.includes("rate limit") || message.includes("too many requests")) {
+      return {
+        title: "Too many attempts",
+        description: "Please wait a moment before trying again.",
+      };
+    }
+    
+    // Default error
+    return {
+      title: "Authentication error",
+      description: message || "An unexpected error occurred. Please try again.",
+    };
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -83,52 +134,14 @@ export default function Auth() {
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            title: "Invalid credentials",
-            description: "Please check your email and password and try again.",
-            variant: "destructive",
-          });
-        } else {
-          throw error;
-        }
+        const { title, description } = getErrorMessage(error);
+        toast({ title, description, variant: "destructive" });
       } else {
         navigate("/");
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    
-    try {
-      // Demo credentials - in a real app, this would be a dedicated demo account
-      const { error } = await supabase.auth.signInWithPassword({
-        email: "demo@smartspend.com",
-        password: "demo123456",
-      });
-
-      if (error) {
-        toast({
-          title: "Demo unavailable",
-          description: "Please try signing up for a new account instead.",
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Demo login is currently unavailable",
-        variant: "destructive",
-      });
+      const { title, description } = getErrorMessage(error);
+      toast({ title, description, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -201,21 +214,6 @@ export default function Auth() {
                     </Link>
                   </div>
                 </form>
-                
-                <div className="text-center mt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={handleDemoLogin}
-                    disabled={loading}
-                  >
-                    Try Demo
-                  </Button>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Experience SmartSpend without creating an account
-                  </p>
-                </div>
               </TabsContent>
               
               <TabsContent value="signup">

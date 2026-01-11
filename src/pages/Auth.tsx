@@ -83,12 +83,13 @@ export default function Auth() {
 
   const getErrorMessage = (error: any): { title: string; description: string } => {
     const message = error?.message || "";
+    const status = error?.status;
     
-    // Network/connection errors
-    if (message.includes("Failed to fetch") || message.includes("NetworkError") || message.includes("fetch")) {
+    // Network/CORS/connection errors
+    if (message.includes("Failed to fetch") || message.includes("NetworkError") || message.includes("TypeError")) {
       return {
-        title: "Connection error",
-        description: "Unable to connect to the server. Please check your internet connection and try again.",
+        title: "Network error",
+        description: "Could not reach the authentication server. Please check your connection and try again.",
       };
     }
     
@@ -97,6 +98,14 @@ export default function Auth() {
       return {
         title: "Invalid credentials",
         description: "The email or password you entered is incorrect. Please try again.",
+      };
+    }
+    
+    // User not found
+    if (message.includes("User not found")) {
+      return {
+        title: "Account not found",
+        description: "No account exists with this email. Please sign up first.",
       };
     }
     
@@ -109,10 +118,34 @@ export default function Auth() {
     }
     
     // Rate limiting
-    if (message.includes("rate limit") || message.includes("too many requests")) {
+    if (message.includes("rate limit") || message.includes("too many requests") || status === 429) {
       return {
         title: "Too many attempts",
         description: "Please wait a moment before trying again.",
+      };
+    }
+    
+    // Password too weak
+    if (message.includes("Password should be")) {
+      return {
+        title: "Weak password",
+        description: message,
+      };
+    }
+    
+    // Invalid email format
+    if (message.includes("invalid email") || message.includes("Unable to validate email")) {
+      return {
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+      };
+    }
+    
+    // Server errors
+    if (status >= 500) {
+      return {
+        title: "Server error",
+        description: "The authentication service is temporarily unavailable. Please try again later.",
       };
     }
     

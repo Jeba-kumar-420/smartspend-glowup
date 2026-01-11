@@ -34,11 +34,10 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName,
           }
@@ -53,29 +52,28 @@ export default function Auth() {
             variant: "destructive",
           });
         } else {
-          throw error;
+          const { title, description } = getErrorMessage(error);
+          toast({ title, description, variant: "destructive" });
         }
-      } else {
-        toast({
-          title: "Check your email",
-          description: "We've sent you a confirmation link to complete your registration.",
+      } else if (data.session) {
+        // Auto-signed in, redirect to dashboard
+        navigate("/");
+      } else if (data.user && !data.session) {
+        // Email confirmation is enabled on Supabase side, sign in directly
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
         });
+        if (signInError) {
+          const { title, description } = getErrorMessage(signInError);
+          toast({ title, description, variant: "destructive" });
+        } else {
+          navigate("/");
+        }
       }
     } catch (error: any) {
-      const message = error?.message || "";
-      if (message.includes("Failed to fetch") || message.includes("NetworkError")) {
-        toast({
-          title: "Connection error",
-          description: "Unable to connect to the server. Please check your internet connection.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Sign up error",
-          description: message || "An unexpected error occurred. Please try again.",
-          variant: "destructive",
-        });
-      }
+      const { title, description } = getErrorMessage(error);
+      toast({ title, description, variant: "destructive" });
     } finally {
       setLoading(false);
     }

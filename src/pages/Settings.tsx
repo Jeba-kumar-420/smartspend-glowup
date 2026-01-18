@@ -127,61 +127,6 @@ const Settings = () => {
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
-          {/* Savings Options */}
-          <Card>
-            <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <PiggyBank className="w-5 h-5" />
-                Savings Options
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
-                {savingsCategories.map((category) => {
-                  const Icon = category.icon;
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => handleSavingsClick(category.id)}
-                      className={`p-3 sm:p-4 rounded-lg border-2 transition-colors text-left ${category.color}`}
-                    >
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-gray-600" />
-                      <h3 className="font-semibold text-sm sm:text-base text-gray-800">{category.title}</h3>
-                      <p className="text-xs sm:text-sm text-gray-600">{category.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="text-xs sm:text-sm text-muted-foreground text-center p-3 sm:p-4 bg-muted/50 rounded-lg">
-                Choose a savings category to start tracking your financial goals
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card 
-              className="cursor-pointer hover:bg-accent/5 transition-colors"
-              onClick={() => setActiveTab("history")}
-            >
-              <CardContent className="p-4 text-center">
-                <History className="w-6 h-6 mx-auto mb-2 text-accent-foreground" />
-                <h3 className="font-semibold">History</h3>
-                <p className="text-sm text-muted-foreground">View all expenses</p>
-              </CardContent>
-            </Card>
-            <Card 
-              className="cursor-pointer hover:bg-accent/5 transition-colors"
-              onClick={() => setActiveTab("reports")}
-            >
-              <CardContent className="p-4 text-center">
-                <BarChart3 className="w-6 h-6 mx-auto mb-2 text-accent-foreground" />
-                <h3 className="font-semibold">Reports</h3>
-                <p className="text-sm text-muted-foreground">Download data</p>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* Currency Settings */}
           <Card>
             <CardHeader className="bg-accent text-accent-foreground rounded-t-lg">
@@ -267,6 +212,69 @@ const Settings = () => {
                   onCheckedChange={setNotifications}
                 />
               </div>
+            </CardContent>
+          </Card>
+
+          {/* History Quick Access */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <History className="w-5 h-5" />
+                History & Reports
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-4 flex flex-col items-center gap-2"
+                  onClick={() => setActiveTab("history")}
+                >
+                  <History className="w-6 h-6 text-accent-foreground" />
+                  <span className="font-semibold">View History</span>
+                  <span className="text-xs text-muted-foreground">All expenses</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-4 flex flex-col items-center gap-2"
+                  onClick={() => setActiveTab("reports")}
+                >
+                  <BarChart3 className="w-6 h-6 text-accent-foreground" />
+                  <span className="font-semibold">Reports</span>
+                  <span className="text-xs text-muted-foreground">Download data</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Savings Options */}
+          <Card>
+            <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <PiggyBank className="w-5 h-5" />
+                Savings Options
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
+                {savingsCategories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <button
+                      key={category.id}
+                      onClick={() => handleSavingsClick(category.id)}
+                      className={`p-3 sm:p-4 rounded-lg border-2 transition-colors text-left ${category.color}`}
+                    >
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 mb-2 text-gray-600" />
+                      <h3 className="font-semibold text-sm sm:text-base text-gray-800">{category.title}</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">{category.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground text-center p-3 sm:p-4 bg-muted/50 rounded-lg">
+                Choose a savings category to start tracking your financial goals
+              </p>
             </CardContent>
           </Card>
 

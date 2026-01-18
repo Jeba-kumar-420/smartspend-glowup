@@ -112,7 +112,7 @@ export const DailyChartsSection = () => {
             <SpendingChart 
               data={savingsChartData} 
               showAverage={true}
-              title=""
+              title="Daily Savings (Last 7 Days)"
               lineColor="hsl(var(--success))"
             />
           </CardContent>

@@ -90,16 +90,16 @@ export const CSVExport = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-2">
-      <Button onClick={exportExpenses} variant="outline" size="sm">
+    <div className="flex flex-wrap gap-3">
+      <Button onClick={exportExpenses} variant="outline" size="sm" className="flex-1 min-w-[140px]">
         <Download className="h-4 w-4 mr-2" />
         Export Expenses
       </Button>
-      <Button onClick={exportSavings} variant="outline" size="sm">
+      <Button onClick={exportSavings} variant="outline" size="sm" className="flex-1 min-w-[140px]">
         <Download className="h-4 w-4 mr-2" />
         Export Savings
       </Button>
-      <Button onClick={exportAll} variant="outline" size="sm">
+      <Button onClick={exportAll} variant="outline" size="sm" className="flex-1 min-w-[140px]">
         <Download className="h-4 w-4 mr-2" />
         Export All
       </Button>

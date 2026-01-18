@@ -57,8 +57,8 @@ const Savings = () => {
     <div className="min-h-screen bg-background pb-20">
       <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
       
-      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
-        <div className="text-center mb-6">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-4">
             <PiggyBank className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           </div>
@@ -66,7 +66,7 @@ const Savings = () => {
           <p className="text-sm sm:text-base text-muted-foreground">Track your daily savings</p>
         </div>
 
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-3xl mx-auto space-y-6">
           {/* Savings Goals */}
           <SavingsGoals />
 

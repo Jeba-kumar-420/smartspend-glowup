@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Settings2, 
   PiggyBank, 
@@ -82,7 +83,7 @@ const Settings = () => {
     <div className="min-h-screen bg-background pb-20">
       <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
       
-      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-accent/10 rounded-full mb-4">
             <Settings2 className="w-6 h-6 sm:w-8 sm:h-8 text-accent-foreground" />
@@ -190,14 +191,34 @@ const Settings = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 sm:p-6 space-y-4">
-              <div className="space-y-2">
-                <Label className="text-sm">Current Currency</Label>
-                <div className="text-base sm:text-lg font-medium text-primary">
-                  {profile?.currency || 'USD'} - {formatCurrency(0).replace('0.00', 'Format')}
-                </div>
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Select Currency</Label>
+                <Select 
+                  value={profile?.currency || 'USD'} 
+                  onValueChange={(value) => updateProfile({ currency: value })}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">$ USD - US Dollar</SelectItem>
+                    <SelectItem value="EUR">€ EUR - Euro</SelectItem>
+                    <SelectItem value="GBP">£ GBP - British Pound</SelectItem>
+                    <SelectItem value="INR">₹ INR - Indian Rupee</SelectItem>
+                    <SelectItem value="JPY">¥ JPY - Japanese Yen</SelectItem>
+                    <SelectItem value="CAD">C$ CAD - Canadian Dollar</SelectItem>
+                    <SelectItem value="AUD">A$ AUD - Australian Dollar</SelectItem>
+                    <SelectItem value="CHF">CHF - Swiss Franc</SelectItem>
+                    <SelectItem value="CNY">¥ CNY - Chinese Yuan</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Use the currency selector in the header to change your preferred currency. All amounts will be displayed in the selected format.
+              <div className="p-3 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">Current Format</p>
+                <p className="text-lg font-bold text-primary">{formatCurrency(1234.56)}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Currency changes are saved automatically and apply across all pages.
               </p>
             </CardContent>
           </Card>

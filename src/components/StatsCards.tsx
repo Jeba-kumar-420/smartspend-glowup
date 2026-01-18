@@ -67,7 +67,8 @@ export const StatsCards = () => {
       icon: TrendingUp,
       gradient: 'from-warning/10 to-warning/5',
       border: 'border-warning/20',
-      textColor: 'text-warning'
+      textColor: 'text-warning',
+      minHeight: true
     },
     {
       id: 'savings',
@@ -91,22 +92,24 @@ export const StatsCards = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className={`bg-gradient-to-br ${card.gradient} ${card.border} hover:shadow-lg transition-shadow duration-300`}>
+            <Card className={`bg-gradient-to-br ${card.gradient} ${card.border} hover:shadow-lg transition-shadow duration-300 h-full flex flex-col`}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Icon className="h-4 w-4" />
                   {card.title}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${card.textColor} ${card.id === 'category' ? 'text-lg capitalize' : ''}`}>
-                  {card.value}
-                </div>
-                {card.subtitle && (
-                  <div className="text-sm text-muted-foreground">
-                    {card.subtitle}
+              <CardContent className="flex-1 flex flex-col justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${card.textColor} ${card.id === 'category' ? 'text-lg capitalize' : ''}`}>
+                    {card.value}
                   </div>
-                )}
+                  {card.subtitle && (
+                    <div className="text-sm text-muted-foreground">
+                      {card.subtitle}
+                    </div>
+                  )}
+                </div>
                 {card.extra}
               </CardContent>
             </Card>

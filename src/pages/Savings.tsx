@@ -5,6 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
 import { SavingsGoals } from "@/components/SavingsGoals";
+import { SavingsGrowthSuggestions } from "@/components/SavingsGrowthSuggestions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +69,9 @@ const Savings = () => {
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Savings Goals */}
           <SavingsGoals />
+
+          {/* Savings Growth Suggestions */}
+          <SavingsGrowthSuggestions />
 
           <Card>
             <CardHeader>

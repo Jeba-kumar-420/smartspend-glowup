@@ -7,7 +7,7 @@ import { ReportGenerator } from "@/components/ReportGenerator";
 import { DailySavingsTracker } from "@/components/DailySavingsTracker";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useProfile } from "@/hooks/useProfile";
+import { useApp } from "@/contexts/AppContext";
 import { useExpenses } from "@/hooks/useExpenses";
 import { useSavings } from "@/hooks/useSavings";
 import { CategoryManagement } from "@/components/CategoryManagement";
@@ -42,17 +42,9 @@ const Settings = () => {
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { signOut } = useAuth();
-  const { profile, updateProfile } = useProfile();
+  const { currency, setCurrency, formatCurrency } = useApp();
   const { expenses } = useExpenses();
   const { savings } = useSavings();
-
-  const formatCurrency = (amount: number) => {
-    const currencySymbols: { [key: string]: string } = {
-      USD: '$', EUR: '€', GBP: '£', JPY: '¥', INR: '₹', CNY: '¥', CAD: 'C$', AUD: 'A$'
-    };
-    const symbol = currencySymbols[profile?.currency || 'USD'] || '$';
-    return `${symbol}${amount.toFixed(2)}`;
-  };
 
   const savingsCategories = [
     { id: "daily", title: "Daily Savings", description: "Track daily", icon: PiggyBank, color: "bg-emerald-100 hover:bg-emerald-200 border-emerald-200" },
@@ -139,8 +131,8 @@ const Settings = () => {
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Select Currency</Label>
                 <Select 
-                  value={profile?.currency || 'USD'} 
-                  onValueChange={(value) => updateProfile({ currency: value })}
+                  value={currency} 
+                  onValueChange={(value) => setCurrency(value)}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select currency" />
@@ -175,7 +167,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="budget" className="text-sm">Daily Budget Limit ({profile?.currency || 'USD'})</Label>
+                <Label htmlFor="budget" className="text-sm">Daily Budget Limit ({currency})</Label>
                 <Input
                   id="budget"
                   type="number"

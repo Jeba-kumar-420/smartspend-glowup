@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -6,22 +6,14 @@ import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
 import { SavingsGoals } from "@/components/SavingsGoals";
 import { SavingsGrowthSuggestions } from "@/components/SavingsGrowthSuggestions";
-import { SpendingChart } from "@/components/SpendingChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PiggyBank, Target, TrendingUp, Plus, Calendar } from "lucide-react";
+import { PiggyBank, Plus, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-
-interface SavingEntry {
-  id: string;
-  amount: number;
-  date: string;
-  category?: string;
-}
 
 const Savings = () => {
   const [newSaving, setNewSaving] = useState("");
@@ -31,33 +23,6 @@ const Savings = () => {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { formatCurrency } = useApp();
   const { savings, addSaving, loading } = useSavings();
-
-  // Generate savings chart data for last 7 days
-  const savingsChartData = useMemo(() => {
-    const now = new Date();
-    const weekData = [];
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - i);
-      
-      const daySavings = savings.filter(saving => {
-        const savingDate = new Date(saving.date);
-        return savingDate.toDateString() === date.toDateString();
-      });
-
-      const totalAmount = daySavings.reduce((sum, saving) => sum + saving.amount, 0);
-
-      weekData.push({
-        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        amount: totalAmount,
-        category: 'savings',
-      });
-    }
-
-    return weekData;
-  }, [savings]);
 
   const handleAddSaving = async () => {
     if (!newSaving || isNaN(Number(newSaving))) {
@@ -94,24 +59,6 @@ const Savings = () => {
         </div>
 
         <div className="max-w-3xl mx-auto space-y-6">
-          {/* Savings Trends Chart */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-success" />
-                Savings Trends
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <SpendingChart 
-                data={savingsChartData} 
-                showAverage={true}
-                title="Daily Savings (Last 7 Days)"
-                lineColor="hsl(var(--success))"
-              />
-            </CardContent>
-          </Card>
-
           {/* Savings Goals */}
           <SavingsGoals />
 

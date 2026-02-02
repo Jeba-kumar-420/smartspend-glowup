@@ -2,27 +2,12 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SpendingChart } from "./SpendingChart";
 import { useApp } from "@/contexts/AppContext";
+import { useSavings } from "@/hooks/useSavings";
 import { TrendingUp, TrendingDown } from "lucide-react";
-
-interface DailySavingsData {
-  id: string;
-  amount: number;
-  date: string;
-  note?: string;
-}
 
 export const DailyChartsSection = () => {
   const { expenses } = useApp();
-
-  // Get daily savings from localStorage
-  const dailySavings = useMemo(() => {
-    try {
-      const saved = localStorage.getItem('dailySavings');
-      return saved ? JSON.parse(saved) as DailySavingsData[] : [];
-    } catch {
-      return [];
-    }
-  }, []);
+  const { savings } = useSavings();
 
   // Generate spending chart data from expenses
   const spendingChartData = useMemo(() => {
@@ -52,7 +37,7 @@ export const DailyChartsSection = () => {
     return weekData;
   }, [expenses]);
 
-  // Generate savings chart data
+  // Generate savings chart data from actual savings
   const savingsChartData = useMemo(() => {
     const now = new Date();
     const weekData = [];
@@ -61,7 +46,7 @@ export const DailyChartsSection = () => {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       
-      const daySavings = dailySavings.filter(saving => {
+      const daySavings = savings.filter(saving => {
         const savingDate = new Date(saving.date);
         return savingDate.toDateString() === date.toDateString();
       });
@@ -77,7 +62,7 @@ export const DailyChartsSection = () => {
     }
 
     return weekData;
-  }, [dailySavings]);
+  }, [savings]);
 
   return (
     <div className="space-y-4">

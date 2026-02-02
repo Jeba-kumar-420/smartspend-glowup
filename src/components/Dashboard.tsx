@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,23 @@ import { ReportGenerator } from "./ReportGenerator";
 import { ExpenseAnalytics } from "./ExpenseAnalytics";
 import { StatsCards } from "./StatsCards";
 import { useApp } from "@/contexts/AppContext";
-import { User, Plus, TrendingUp } from "lucide-react";
+import { User, Plus, TrendingUp, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Dashboard = () => {
   const { user, expenses } = useApp();
   const navigate = useNavigate();
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  // Auto-dismiss welcome popup after 4 seconds
+  useEffect(() => {
+    if (showWelcome) {
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showWelcome]);
 
   // Generate chart data from actual expenses
   const generateChartData = () => {
@@ -44,24 +57,42 @@ export const Dashboard = () => {
   const chartData = generateChartData();
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-        <CardContent className="p-6">
-          <div className="flex items-center space-x-4">
-            <div className="bg-primary/20 p-3 rounded-full">
-              <User className="h-8 w-8 text-primary" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold text-foreground mb-1">
-                Welcome back, {user?.name || 'User'}!
-              </h2>
-              <p className="text-muted-foreground">
-                Track your expenses and manage your budget effectively
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Welcome Popup */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
+          >
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-primary/20 p-2 rounded-full">
+                    <User className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-foreground">
+                      Welcome back, {user?.name || 'User'}!
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Track your expenses and manage your budget
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowWelcome(false)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Stats Cards */}
       <StatsCards />

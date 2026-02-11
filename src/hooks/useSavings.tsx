@@ -95,6 +95,35 @@ export const useSavings = () => {
       };
 
       setSavings(prev => [newSaving, ...prev]);
+
+      // Auto-update matching savings goal by category
+      if (savingData.category) {
+        try {
+          const { data: goalsData } = await supabase
+            .from('savings_goals' as any)
+            .select('*')
+            .eq('user_id', user.id);
+
+          const goals = (goalsData || []) as unknown as { id: string; title: string; current_amount: number }[];
+          const matchingGoal = goals.find(
+            (g) => g.title.toLowerCase() === savingData.category.toLowerCase() ||
+                   g.title.toLowerCase().includes(savingData.category.toLowerCase()) ||
+                   savingData.category.toLowerCase().includes(g.title.toLowerCase().split(' ')[0])
+          );
+
+          if (matchingGoal) {
+            const newAmount = Number(matchingGoal.current_amount) + savingData.amount;
+            await supabase
+              .from('savings_goals' as any)
+              .update({ current_amount: newAmount })
+              .eq('id', matchingGoal.id)
+              .eq('user_id', user.id);
+          }
+        } catch (goalError) {
+          console.error('Error updating matching goal:', goalError);
+        }
+      }
+
       toast({
         title: "Success",
         description: "Saving added successfully",

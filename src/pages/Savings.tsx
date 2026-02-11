@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useApp } from "@/contexts/AppContext";
 import { useSavings } from "@/hooks/useSavings";
+import { useSavingsGoals } from "@/hooks/useSavingsGoals";
 import { SavingsGoals } from "@/components/SavingsGoals";
 import { SavingsGrowthSuggestions } from "@/components/SavingsGrowthSuggestions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +24,7 @@ const Savings = () => {
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { formatCurrency } = useApp();
   const { savings, addSaving, loading } = useSavings();
+  const { refetch: refetchGoals } = useSavingsGoals();
 
   const handleAddSaving = async () => {
     if (!newSaving || isNaN(Number(newSaving))) {
@@ -39,6 +41,9 @@ const Savings = () => {
       date: savingDate,
       category: savingCategory,
     });
+
+    // Refetch goals to reflect updated progress
+    await refetchGoals();
 
     setNewSaving("");
     setSavingCategory("general");

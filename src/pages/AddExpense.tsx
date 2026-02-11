@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useExpenses } from "@/hooks/useExpenses";
-import { useProfile } from "@/hooks/useProfile";
+import { useApp } from "@/contexts/AppContext";
 import { SavingsGoals } from "@/components/SavingsGoals";
 import { ExpenseFilters } from "@/components/ExpenseFilters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,15 +34,7 @@ const AddExpense = () => {
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { addExpense } = useExpenses();
-  const { profile } = useProfile();
-
-  const formatCurrency = (amount: number) => {
-    const currencySymbols: { [key: string]: string } = {
-      USD: '$', EUR: '€', GBP: '£', JPY: '¥', INR: '₹', CNY: '¥', CAD: 'C$', AUD: 'A$'
-    };
-    const symbol = currencySymbols[profile?.currency || 'USD'] || '$';
-    return `${symbol}${amount.toFixed(2)}`;
-  };
+  const { formatCurrency, currency } = useApp();
 
   const categories = [
     { value: "food", label: "Food & Dining", icon: "🍕" },
@@ -200,7 +192,7 @@ const AddExpense = () => {
                   min="0"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                  {profile?.currency || 'USD'}
+                  {currency}
                 </span>
               </div>
             </div>

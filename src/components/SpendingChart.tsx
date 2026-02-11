@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp } from "lucide-react";
+import { useApp } from "@/contexts/AppContext";
 
 interface SpendingDataPoint {
   date: string;
@@ -35,7 +36,7 @@ const categoryColors = {
   other: "hsl(var(--category-other))",
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltipInner = ({ active, payload, label, currencyFormatter }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
@@ -52,7 +53,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             }}
           />
           <span className="text-sm font-medium text-success">
-            ${payload[0].value.toFixed(2)}
+            {currencyFormatter(payload[0].value)}
           </span>
         </div>
         {data.category && (
@@ -79,6 +80,7 @@ const EmptyState = () => (
 );
 
 export const SpendingChart = ({ data = [], showAverage = true, title, lineColor = "#ffffff" }: SpendingChartProps) => {
+  const { formatCurrency } = useApp();
   const { chartData, averageSpending } = useMemo(() => {
     if (!data.length) {
       // Generate empty data for the last 7 days
@@ -114,7 +116,7 @@ export const SpendingChart = ({ data = [], showAverage = true, title, lineColor 
           {hasData && showAverage && (
             <div className="flex items-center space-x-1 text-sm text-muted-foreground ml-auto">
               <TrendingUp className="h-4 w-4" />
-              <span>Avg: ${averageSpending.toFixed(2)}</span>
+              <span>Avg: {formatCurrency(averageSpending)}</span>
             </div>
           )}
         </CardTitle>
@@ -139,8 +141,9 @@ export const SpendingChart = ({ data = [], showAverage = true, title, lineColor 
                 <YAxis
                   tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                   axisLine={{ stroke: "hsl(var(--border))" }}
+                  tickFormatter={(value) => formatCurrency(value)}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltipInner currencyFormatter={formatCurrency} />} />
                 
                 {showAverage && averageSpending > 0 && (
                   <ReferenceLine

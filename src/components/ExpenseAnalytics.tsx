@@ -166,6 +166,7 @@ export const ExpenseAnalytics = () => {
                 <YAxis 
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                  tickFormatter={(value) => formatCurrency(value)}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar 

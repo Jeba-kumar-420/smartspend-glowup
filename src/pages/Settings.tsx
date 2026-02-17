@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { HistorySection } from "@/components/HistorySection";
 import { ReportGenerator } from "@/components/ReportGenerator";
-import { DailySavingsTracker } from "@/components/DailySavingsTracker";
+
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApp } from "@/contexts/AppContext";
@@ -86,7 +86,7 @@ const Settings = () => {
 
         <div className="max-w-6xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
               <TabsTrigger value="settings" className="gap-1 sm:gap-2 text-xs sm:text-sm">
                 <Settings2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Settings</span>
@@ -106,11 +106,6 @@ const Settings = () => {
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Reports</span>
                 <span className="sm:hidden">Rep</span>
-              </TabsTrigger>
-              <TabsTrigger value="savings" className="gap-1 sm:gap-2 text-xs sm:text-sm">
-                <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Savings</span>
-                <span className="sm:hidden">Save</span>
               </TabsTrigger>
             </TabsList>
 
@@ -325,9 +320,6 @@ const Settings = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="savings">
-              <DailySavingsTracker />
-            </TabsContent>
           </Tabs>
         </div>
       </main>

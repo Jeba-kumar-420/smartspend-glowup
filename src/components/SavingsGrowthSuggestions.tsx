@@ -127,7 +127,7 @@ export const SavingsGrowthSuggestions = () => {
           Savings Growth Suggestions
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Based on your monthly net savings of{" "}
+          Based on {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}'s net savings of{" "}
           <span
             className={
               monthlySavings >= 0

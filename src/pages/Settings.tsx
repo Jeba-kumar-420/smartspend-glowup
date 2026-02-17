@@ -155,52 +155,6 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          {/* Budget Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Budget Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="budget" className="text-sm">Daily Budget Limit ({currency})</Label>
-                <Input
-                  id="budget"
-                  type="number"
-                  value={dailyBudget}
-                  onChange={(e) => setDailyBudget(e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Set to 0 to disable budget alerts
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Notifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Bell className="w-5 h-5" />
-                Notifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1 pr-4">
-                  <Label htmlFor="notifications" className="text-sm font-medium">Daily Reminders</Label>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Show reminder to log expenses 📱
-                  </p>
-                </div>
-                <Switch
-                  id="notifications"
-                  checked={notifications}
-                  onCheckedChange={setNotifications}
-                />
-              </div>
-            </CardContent>
-          </Card>
 
           {/* History Quick Access */}
           <Card>

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input as TextInput } from "@/components/ui/input";
 import { PiggyBank, Plus, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -20,6 +21,7 @@ const Savings = () => {
   const [newSaving, setNewSaving] = useState("");
   const [savingDate, setSavingDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [savingCategory, setSavingCategory] = useState("general");
+  const [customCategory, setCustomCategory] = useState("");
   const { toast } = useToast();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const { formatCurrency } = useApp();
@@ -36,10 +38,16 @@ const Savings = () => {
       return;
     }
 
+    const finalCategory = savingCategory === "other" ? customCategory.trim() : savingCategory;
+    if (!finalCategory) {
+      toast({ title: "Missing category", description: "Please enter a custom category name.", variant: "destructive" });
+      return;
+    }
+
     await addSaving({
       amount: Number(newSaving),
       date: savingDate,
-      category: savingCategory,
+      category: finalCategory,
     });
 
     // Refetch goals to reflect updated progress
@@ -47,6 +55,7 @@ const Savings = () => {
 
     setNewSaving("");
     setSavingCategory("general");
+    setCustomCategory("");
     setSavingDate(format(new Date(), 'yyyy-MM-dd'));
   };
 
@@ -113,10 +122,21 @@ const Savings = () => {
                     <SelectItem value="investment">Investment</SelectItem>
                     <SelectItem value="education">Education</SelectItem>
                     <SelectItem value="home">Home</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="other">Other (Custom)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+              {savingCategory === "other" && (
+                <div className="space-y-2">
+                  <Label htmlFor="customCategory">Custom Category Name</Label>
+                  <TextInput
+                    id="customCategory"
+                    placeholder="Enter custom category..."
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                  />
+                </div>
+              )}
               <Button onClick={handleAddSaving} className="w-full">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Savings Entry
